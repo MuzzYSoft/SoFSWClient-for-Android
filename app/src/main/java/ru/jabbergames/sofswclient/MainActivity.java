@@ -724,7 +724,7 @@ public class MainActivity  extends TabActivity {
         for (int i = 0; i < input.length(); ++i)
         {
             int c = (int)input.charAt(i);
-            if ((c > 47 && c < 126) || (c > 31 && c < 38) || (c > 1024 && c < 1279) || (c==42)) sb.append((char)input.charAt(i)); else sb.append(":amp:" + c + ";");
+            if ((c > 47 && c < 126) || (c > 31 && c < 38) || (c > 1024 && c < 1279) || (c==42)) sb.append((char)input.charAt(i)); else sb.append(":amp:#" + c + ";");
         }
 
         strXmlText = sb.toString();
