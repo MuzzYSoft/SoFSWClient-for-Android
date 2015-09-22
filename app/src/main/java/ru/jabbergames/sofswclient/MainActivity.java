@@ -1134,8 +1134,7 @@ public class MainActivity  extends TabActivity {
         protected String doInBackground(String... params) {
             String str="error";
             HttpClient httpclient = new DefaultHttpClient();
-            //HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
-            HttpPost httppost = new HttpPost("http://10.22.0.21/g.php");
+            HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
 
             try
             {
