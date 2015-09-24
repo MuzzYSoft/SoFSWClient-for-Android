@@ -54,11 +54,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -370,27 +375,6 @@ public class MainActivity  extends TabActivity {
         ll.addView(btn);
     }
 
-    private void  AddLnkButtC(String kay, String txt) {
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ComButtLay);
-        Button btn = new Button(this);
-        btn.setText(kay);
-        btn.setTag(txt);
-        // создаем обработчик нажатия
-        View.OnClickListener oclBtnCmd = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String com = (String)v.getTag();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(com));
-                startActivity(browserIntent);
-            }
-        };
-
-        // присвоим обработчик кнопке
-        btn.setOnClickListener(oclBtnCmd);
-
-        ll.addView(btn);
-    }
-
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     public static int generateViewId() {
@@ -558,7 +542,6 @@ public class MainActivity  extends TabActivity {
         ll.addView(btn);
     }
 
-
     private void AddToChat(String from, String to, String message, String dtime, boolean priv, boolean totop) {
         LinearLayout ll = (LinearLayout) findViewById(R.id.chatContent);
 
@@ -589,12 +572,41 @@ public class MainActivity  extends TabActivity {
 
         }
 
+
+        String shou = "";
+        String smin = "";
+        if (dtime != "none")
+        {
+            Calendar currentCalendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+5"));
+            int gmtOffset = TimeZone.getDefault().getRawOffset()-TimeZone.getTimeZone("GMT+5").getRawOffset();
+
+            int index = dtime.indexOf(":");
+            smin = dtime.substring(index + 1, 5);
+            shou = dtime.substring(0, index);
+            int min = Integer.parseInt(smin);
+            int hou = Integer.parseInt(shou);
+
+            currentCalendar.set(Calendar.HOUR_OF_DAY, hou);
+            currentCalendar.set(Calendar.MINUTE, min);
+
+            currentCalendar.setTimeInMillis(currentCalendar.getTimeInMillis() + gmtOffset);
+
+            hou = (int)currentCalendar.get(Calendar.HOUR_OF_DAY);
+            min = (int)currentCalendar.get(Calendar.MINUTE);
+
+            if (min < 10) {
+                shou = Integer.toString(hou) + ":0" + Integer.toString(min);
+            } else {
+                shou = Integer.toString(hou) + ":" + Integer.toString(min);
+            }
+        }
+
         Button btn = new Button(this);
         if(priv){
-            btn.setText(dtime + " приватно от " + from + ":\n\r" + message);
+            btn.setText(shou + " приватно от " + from + ":\n\r" + message);
             btn.setTextColor(Color.parseColor("#ccff0e15"));
         }else {
-            btn.setText(dtime + " " + from + ":\n" + message);
+            btn.setText(shou + " " + from + ":\n" + message);
         }
         btn.setGravity(Gravity.LEFT);
         btn.setTransformationMethod(null);
@@ -760,7 +772,7 @@ public class MainActivity  extends TabActivity {
         int cx = Integer.parseInt(x);
         int cy = Integer.parseInt(y);
         String tx; String ty;
-        int rz = 20;
+        int rz = 16;
         int hmc = (int)(iv.getWidth()/2)-1;
         int vmc = (int)(iv.getHeight()/2);
         int hdc =  (int)(hmc/rz);
@@ -894,7 +906,7 @@ public class MainActivity  extends TabActivity {
                                                         break;
                                                     case "dtime":
                                                         dtime = gelement.getTextContent();
-                                                        if (dtime.indexOf("none") == 0) dtime = "";
+                                                        //if (dtime.indexOf("none") == 0) dtime = "";
                                                         break;
                                                     case "mid":
                                                         String ts = gelement.getTextContent();
@@ -1055,7 +1067,6 @@ public class MainActivity  extends TabActivity {
                                         // TODO: handle exception
                                     }
                                 }
-                                AddLnkButtC("соглашение, правила, помощь", "http://jabbergames.ru/rules");
                                 //cont = true;
                                 break;
                             case "Settings":
