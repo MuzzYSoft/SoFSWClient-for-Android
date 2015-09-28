@@ -7,7 +7,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_horizontal">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -16,7 +17,7 @@
         android:id="@+id/ComButtLay">
     </LinearLayout>
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="соглашение, правила, сайт игры"/>

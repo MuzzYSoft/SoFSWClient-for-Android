@@ -772,7 +772,8 @@ public class MainActivity  extends TabActivity {
         int cx = Integer.parseInt(x);
         int cy = Integer.parseInt(y);
         String tx; String ty;
-        int rz = 16;
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
+        int rz = image.getHeight();
         int hmc = (int)(iv.getWidth()/2)-1;
         int vmc = (int)(iv.getHeight()/2);
         int hdc =  (int)(hmc/rz);
