@@ -29,12 +29,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TextView;
-
+import android.app.Activity;
+import android.content.Intent;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -69,39 +72,52 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-
 public class MainActivity  extends TabActivity {
-
     private String deviceId;
-    private String ClVer = "a.1.0.0.1";
+    private String ClVer = "a.1.0.1.8";
     private int STextEditID;
     int chatminid = 2147483647;
-
+    Activity fict;
     private TextView mCmdTextView;
-
     Button btnCmdSend;
-
+    ImageButton btnGoEast;
+    ImageButton btnGoSouth;
+    ImageButton btnGoNorth;
+    ImageButton btnGoWest;
+    ImageButton btnCont;
     TabHost tabHost;
-
+    boolean uot;
     final String TABS_TAG_1 = "game";
     final String TABS_TAG_2 = "coms";
     final String TABS_TAG_3 = "chat";
     final String TABS_TAG_4 = "cmds";
-
     private Timer mTimer;
     private MyTimerTask mMyTimerTask;
 
     private List<String> ReqGm = new ArrayList<String>();
     private int tick = 0;
-
-    ArrayList<String> mapC = new ArrayList<String>();
-    ArrayList<String> mapP = new ArrayList<String>();
+    ArrayList<String> tagsGo = new ArrayList<String>();
+    //ArrayList<String> mapC = new ArrayList<String>();
+    //ArrayList<String> mapP = new ArrayList<String>();
+    View.OnClickListener oclBtnCont = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            SendCom("0");
+            addLog("0");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        super.onCreate(savedInstanceState);
+        fict=this;
+        Utils.onActivityCreateSetTheme(this);
+
+        setContentView(R.layout.activity_main);
+        if(Utils.flag){
+            SendCom("getcomms");
+        }
         final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
         final String tmDevice, tmSerial, androidId;
@@ -115,9 +131,12 @@ public class MainActivity  extends TabActivity {
         tabHost = getTabHost();
         TabHost.TabSpec spec;
         Intent intent;
-
+        tagsGo.add("w");
+        tagsGo.add("n");
+        tagsGo.add("s");
+        tagsGo.add("e");
+        tagsGo.add("0");
         TabHost.TabSpec tabSpec;
-
         tabSpec = tabHost.newTabSpec(TABS_TAG_1);
         tabSpec.setContent(TabFactory);
         tabSpec.setIndicator(getString(R.string.title_activity_game));
@@ -137,9 +156,56 @@ public class MainActivity  extends TabActivity {
         tabSpec.setContent(TabFactory);
         tabSpec.setIndicator(getString(R.string.title_activity_cmd));
         tabHost.addTab(tabSpec);
-
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             public void onTabChanged(String tabId) {
+                if(tabId == TABS_TAG_1) {
+                    btnCont = (ImageButton) findViewById(R.id.comBarButton0);
+                    // создаем обработчик нажатия
+                    btnGoWest = (ImageButton) findViewById(R.id.comBarButton1);
+                    btnGoNorth = (ImageButton) findViewById(R.id.comBarButton2);
+                    btnGoSouth = (ImageButton) findViewById(R.id.comBarButton3);
+                    btnGoEast = (ImageButton) findViewById(R.id.comBarButton4);
+
+                    View.OnClickListener oclBtnGoWest = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            SendCom("w");
+                            addLog("w");
+                        }
+                    };
+
+                    // создаем обработчик нажатия
+                    View.OnClickListener oclBtnGoNorth = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            SendCom("n");
+                            addLog("n");
+                        }
+                    };
+
+                    // создаем обработчик нажатия
+                    View.OnClickListener oclBtnGoSouth = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            SendCom("s");
+                            addLog("s");
+                        }
+                    };
+
+                    // создаем обработчик нажатия
+                    View.OnClickListener oclBtnGoEast = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            SendCom("e");
+                            addLog("e");
+                        }
+                    };
+                    btnCont.setOnClickListener(oclBtnCont);
+                    btnGoWest.setOnClickListener(oclBtnGoWest);
+                    btnGoNorth.setOnClickListener(oclBtnGoNorth);
+                    btnGoSouth.setOnClickListener(oclBtnGoSouth);
+                    btnGoEast.setOnClickListener(oclBtnGoEast);
+                };
                 if (tabId == TABS_TAG_2) {
                     SendCom("getcomms");
                 } else if (tabId == TABS_TAG_3) {
@@ -301,7 +367,6 @@ public class MainActivity  extends TabActivity {
             return super.onKeyDown(keyCode, event);
         }
     }
-
     //лог в консоле
     public void addLog(String addstr) {
         TextView mCmdText = (TextView)findViewById(R.id.logTextView);
@@ -316,27 +381,27 @@ public class MainActivity  extends TabActivity {
     }
 
     private void AddButC(String kay, String txt) {
-        if (txt != "") {
-            LinearLayout ll = (LinearLayout) findViewById(R.id.ComButtLay);
-            Button btn = new Button(this);
-            btn.setText(txt);
-            btn.setTag(kay);
+        if(!Utils.flag) {
+            if (txt != "") {
+                LinearLayout ll = (LinearLayout) findViewById(R.id.ComButtLay);
+                Button btn = new Button(this);
+                btn.setText(txt);
+                btn.setTag(kay);
+                // создаем обработчик нажатия
+                View.OnClickListener oclBtnCmd = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String com = (String) v.getTag();
+                        SendCom(com);
+                        addLog(com);
+                        tabHost.setCurrentTabByTag(TABS_TAG_1);
+                    }
+                };
 
-            // создаем обработчик нажатия
-            View.OnClickListener oclBtnCmd = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String com = (String)v.getTag();
-                    SendCom(com);
-                    addLog(com);
-                    tabHost.setCurrentTabByTag(TABS_TAG_1);
-                 }
-            };
-
-            // присвоим обработчик кнопке
-            btn.setOnClickListener(oclBtnCmd);
-
-            ll.addView(btn);
+                // присвоим обработчик кнопке
+                btn.setOnClickListener(oclBtnCmd);
+                ll.addView(btn);
+            }
         }
     }
 
@@ -409,9 +474,6 @@ public class MainActivity  extends TabActivity {
                     et.setId(STextEditID);
                     ll.addView(et);
 
-                    Button btnS = new Button(this);
-                    btnS.setText("OK");
-
                     // создаем обработчик нажатия
                     View.OnClickListener oclBtnCmdS = new View.OnClickListener() {
                         @Override
@@ -422,33 +484,121 @@ public class MainActivity  extends TabActivity {
                             SendCom(scom);
                             addLog(scom);
                             mCmdText.setText("");
+                            btnCont.setOnClickListener(oclBtnCont);
                         }
                     };
 
                     // присвоим обработчик кнопке
-                    btnS.setOnClickListener(oclBtnCmdS);
-                    ll.addView(btnS);
+                    btnCont.setOnClickListener(oclBtnCmdS);
                     break;
                 default:
-                    //добавить кнопку
-                    Button btn = new Button(this);
-                    btn.setText(txt);
-                    btn.setTag(kay);
-                    btn.setTransformationMethod(null);
-
-                    // создаем обработчик нажатия
-                    View.OnClickListener oclBtnCmd = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String com = (String)v.getTag();
-                            SendCom(com);
-                            addLog(com);
+                        Button btn = new Button(this);
+                        btn.setText(txt);
+                        btn.setTag(kay);
+                        btn.setTransformationMethod(null);
+                    if(kay.contains("swtheme")) {
+                        if (txt.contains("Выбрана: Светлая тема")) {
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Utils.changeToTheme(fict, Utils.THEME_DARK);
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                }
+                            };
+                            btn.setOnClickListener(oclBtnCmdd);
+                        } else if (txt.contains("Выбрана: Темная тема")) {
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Utils.changeToTheme(fict, Utils.THEME_LIGHT);
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                }
+                            };
+                            btn.setOnClickListener(oclBtnCmdd);
                         }
-                    };
-
-                    // присвоим обработчик кнопке
-                    btn.setOnClickListener(oclBtnCmd);
-                    ll.addView(btn);
+                    }else if(kay.contains("swpush_rdy")) {
+                        if(txt.contains("выключены"))
+                        {
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Utils.toastHpIsAcc=true;
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                }
+                            };
+                            btn.setOnClickListener(oclBtnCmdd);
+                        }
+                        else if(txt.contains("включены")) {
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Utils.toastHpIsAcc=false;
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                }
+                            };
+                            btn.setOnClickListener(oclBtnCmdd);
+                        }
+                    }else if(kay.contains("swpush_prmes")) {
+                        if(txt.contains("выключены"))
+                        {
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Utils.toastPrMesIsAcc=true;
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                }
+                            };
+                            btn.setOnClickListener(oclBtnCmdd);
+                        }
+                        else if(txt.contains("включены")) {
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Utils.toastPrMesIsAcc=false;
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                }
+                            };
+                            btn.setOnClickListener(oclBtnCmdd);
+                        }
+                    }
+                    else{
+                        // создаем обработчик нажатия
+                        View.OnClickListener oclBtnCmd = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String com = (String) v.getTag();
+                                SendCom(com);
+                                addLog(com);
+                            }
+                        };
+                        // присвоим обработчик кнопке
+                        btn.setOnClickListener(oclBtnCmd);
+                    }
+                        ll.addView(btn);
                     break;
             }
         }
@@ -467,6 +617,17 @@ public class MainActivity  extends TabActivity {
     private void SetPHP(String hpdes, String hp, String hpmax) {
         TextView tv = (TextView) findViewById(R.id.progress_hp_text);
         tv.setText(hpdes + hp + "/" + hpmax);
+        if(Utils.toastHpIsAcc) {
+            if (hp.equals(hpmax) & uot) {
+                uot = false;
+                Toast toastPriv = Toast.makeText(getApplicationContext(),
+                        "Жизни героя восстановлены!", Toast.LENGTH_LONG);
+                toastPriv.setGravity(Gravity.BOTTOM, 0, 0);
+                toastPriv.show();
+            } else if (!hp.equals(hpmax)) {
+                uot = true;
+            }
+        }
         ProgressBar pb = (ProgressBar) findViewById(R.id.progressBarHP);
         pb.setMax(Integer.parseInt(hpmax));
         pb.setProgress(Integer.parseInt(hp));
@@ -548,7 +709,7 @@ public class MainActivity  extends TabActivity {
         //кнопка загрузки истории
         if (ll.getChildCount()>0) {
             Button ghbtn = (Button) ll.getChildAt(0);
-            if (ghbtn.getTag().toString() != "ghbtn") {
+            if (!ghbtn.getTag().toString().equals("ghbtn")) {
                 ghbtn = new Button(this);
                 ghbtn.setText("старые сообщения");
                 ghbtn.setTag("ghbtn");
@@ -575,7 +736,7 @@ public class MainActivity  extends TabActivity {
 
         String shou = "";
         String smin = "";
-        if (dtime != "none")
+        if (!dtime.equals("none"))
         {
             Calendar currentCalendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+5"));
             int gmtOffset = TimeZone.getDefault().getRawOffset()-TimeZone.getTimeZone("GMT+5").getRawOffset();
@@ -603,27 +764,34 @@ public class MainActivity  extends TabActivity {
 
         Button btn = new Button(this);
         if(priv){
+            if(Utils.toastPrMesIsAcc) {
+                String ffrom;
+                ffrom=from;
+                Toast toastPriv = Toast.makeText(getApplicationContext(),
+                        "Приватное сообщение от" + ffrom, Toast.LENGTH_LONG);
+                toastPriv.setGravity(Gravity.BOTTOM, 0, 0);
+                toastPriv.show();
+            }
             btn.setText(shou + " приватно от " + from + ":\n\r" + message);
             btn.setTextColor(Color.parseColor("#ccff0e15"));
         }else {
             btn.setText(shou + " " + from + ":\n" + message);
         }
-        btn.setGravity(Gravity.LEFT);
+        btn.setGravity(Gravity.START);
         btn.setTransformationMethod(null);
         btn.setTag(from);
+        // создаем обработчик нажатия
+        View.OnClickListener oclBtnCmdddd = new View.OnClickListener() {
 
-
-                // создаем обработчик нажатия
-                View.OnClickListener oclBtnCmd = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        nk = v.getTag().toString();
-                        showChPopupMenu(v);
-                    }
-                };
+            @Override
+            public void onClick(View v) {
+                nk = v.getTag().toString();
+                showChPopupMenu(v);
+            }
+        };
 
         // присвоим обработчик кнопке
-        btn.setOnClickListener(oclBtnCmd);
+        btn.setOnClickListener(oclBtnCmdddd);
 
         if (totop) {
             ll.addView(btn, 1);
@@ -642,7 +810,7 @@ public class MainActivity  extends TabActivity {
     private void showChPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);
 
-       //popupMenu.inflate(R.menu.popupmenu); // Для Android 4.0
+        //popupMenu.inflate(R.menu.popupmenu); // Для Android 4.0
         // для версии Android 3.0 нужно использовать длинный вариант
         popupMenu.getMenuInflater().inflate(R.menu.chat_pmenu, popupMenu.getMenu());
 
@@ -656,7 +824,7 @@ public class MainActivity  extends TabActivity {
                             case R.id.menu1:
                                 String t = tv.getText().toString();
                                 if (t.indexOf("Приватно ")==0) tv.setText(nk + ", ");
-                                    else tv.setText(t + nk + ", ");
+                                else tv.setText(t + nk + ", ");
                                 nk = tv.getText().toString();
                                 return true;
                             case R.id.menu2:
@@ -749,12 +917,19 @@ public class MainActivity  extends TabActivity {
     private void UpdateMap(String x, String y, String code)
     {
         ImageView iv = (ImageView) findViewById(R.id.map);
+        Bitmap prom;
         Bitmap tempBitmap = Bitmap.createBitmap(iv.getWidth(), iv.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas tempCanvas = new Canvas(tempBitmap);
-
-        Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
-        tempCanvas.drawBitmap(image, 0, 0, null);
-
+        Bitmap image;
+        if(Utils.isLight){
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
+            prom=Bitmap.createScaledBitmap(image,iv.getWidth(), iv.getHeight(), false);
+            tempCanvas.drawBitmap(prom, 0, 0, null);}
+        else {
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.background_d);
+            prom=Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
+            tempCanvas.drawBitmap(prom, 0, 0, null);
+        }
 /*        BitmapFactory.Options options = new BitmapFactory.Options();
         //options.inInputShareable = true;
         options.inSampleSize = 0;
@@ -763,16 +938,16 @@ public class MainActivity  extends TabActivity {
         Paint transparentpaint = new Paint();
         transparentpaint.setAlpha(200); // 0 - 255
 
-        if (mapC.indexOf(x + ":" + y) < 0) {
-            mapC.add(x + ":" + y);
-            mapP.add(code);
+        if (Utils.mapC.indexOf(x + ":" + y) < 0) {
+            Utils.mapC.add(x + ":" + y);
+            Utils.mapP.add(code);
         }
 
         //16x16
         int cx = Integer.parseInt(x);
         int cy = Integer.parseInt(y);
         String tx; String ty;
-        image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
         int rz = image.getHeight();
         int hmc = (int)(iv.getWidth()/2)-1;
         int vmc = (int)(iv.getHeight()/2);
@@ -782,21 +957,24 @@ public class MainActivity  extends TabActivity {
             for(int j = (-1*vdc); j <= vdc+1; j++) {
                 tx = Integer.toString(cx + i);
                 ty = Integer.toString(cy + j);
-                int pt = mapC.indexOf(tx + ":" + ty);
+                int pt = Utils.mapC.indexOf(tx + ":" + ty);
                 if (pt > -1) {
                     Resources r = getResources();
-                    try {
-                        Class res = R.drawable.class;
-                        Field field = res.getField(mapP.get(pt).toString()+"_l");
-                        int drawableId = field.getInt(null);
-                        image = BitmapFactory.decodeResource(r, drawableId);
-                        //image.setPremultiplied(true);
-                        //image.setHasAlpha(true);
-                        tempCanvas.drawBitmap(image, hmc + i * rz, vmc - j * rz, transparentpaint);
-                    }
-                    catch (Exception e) {
+                    String gogo;
+                    if(Utils.isLight) {
+                        gogo="_l";
+                    } else {gogo="_d";}
+                        try {
+                            Class res = R.drawable.class;
+                            Field field = res.getField(Utils.mapP.get(pt).toString() + gogo);
+                            int drawableId = field.getInt(null);
+                            image = BitmapFactory.decodeResource(r, drawableId);
+                            //image.setPremultiplied(true);
+                            //image.setHasAlpha(true);
+                            tempCanvas.drawBitmap(image, hmc + i * rz, vmc - j * rz, transparentpaint);
+                        } catch (Exception e) {
 
-                    }
+                        }
                     //int drawableId = r.getIdentifier(mapP.get(pt).toString()+"_l", "drawable", "ru.jabbergames.sofswclient");
                 }
             }
@@ -844,7 +1022,7 @@ public class MainActivity  extends TabActivity {
                                                                 Element gelement = (Element) lnodes.item(l);
                                                                 switch (gelement.getNodeName()) {
                                                                     case "lynk":
-                                                                        AddLnkButt(gelement.getAttribute("text"), gelement.getAttribute("a"));
+                                                                            AddLnkButt(gelement.getAttribute("text"), gelement.getAttribute("a"));
                                                                         break;
                                                                 }
                                                             } catch (Exception e) {
@@ -1017,16 +1195,16 @@ public class MainActivity  extends TabActivity {
                                         AddChatRoomD(chnm, chdes, chincount);
                                         break;
                                     case "mappoints":
-                                        mapP.clear();
-                                        mapC.clear();
+                                        Utils.mapP.clear();
+                                        Utils.mapC.clear();
                                         NodeList mpnodes = nodes.item(i).getChildNodes();
                                         for (int j = 0; j < mpnodes.getLength(); j++) {
                                             try {
                                                 Element melement = (Element) mpnodes.item(j);
                                                 switch (melement.getNodeName()) {
                                                     case "mpt":
-                                                        mapC.add(melement.getAttribute("x") + ":" + melement.getAttribute("y"));
-                                                        mapP.add(melement.getAttribute("c"));
+                                                        Utils.mapC.add(melement.getAttribute("x") + ":" + melement.getAttribute("y"));
+                                                        Utils.mapP.add(melement.getAttribute("c"));
                                                         break;
                                                 }
 
@@ -1071,7 +1249,34 @@ public class MainActivity  extends TabActivity {
                                 //cont = true;
                                 break;
                             case "Settings":
-                                //addLog("На данный момент данные возможности реализованы только в клиенте для Windows");
+                                if(Utils.flag) {
+                                    NodeList setnodes = nodes.item(i).getChildNodes();
+                                    for (int j = 0; (j < setnodes.getLength())&Utils.flag; j++) {
+                                        try {
+                                            Element setmelement = (Element) setnodes.item(j);
+                                            switch (setmelement.getNodeName()) {
+                                                case "Theme":
+                                                    switch (setmelement.getTextContent()) {
+                                                        case "Dark":
+                                                            Utils.flag=false;
+                                                            Utils.isLight=false;
+                                                            Utils.changeToTheme(fict,Utils.THEME_DARK);
+                                                            break;
+                                                        case "Light":
+                                                            Utils.flag=false;
+                                                            Utils.isLight=true;
+                                                            Utils.changeToTheme(fict,Utils.THEME_LIGHT);
+                                                            break;
+                                                    }
+
+                                                    break;
+                                            }
+
+                                        } catch (Exception e) {
+                                            // TODO: handle exception
+                                        }
+                                    }
+                                }
                                 break;
                             case "perdata":
                                 NodeList pnodes = nodes.item(i).getChildNodes();
@@ -1164,13 +1369,11 @@ public class MainActivity  extends TabActivity {
             {
                 e.printStackTrace();
                 addLog("Подключение невозможно. Проверьте, пожалуйста, соединение интернет.");
-                tabHost.setCurrentTabByTag(TABS_TAG_4);
             }
             catch (IOException e)
             {
                 e.printStackTrace();
                 addLog("Ошибка. Проверьте, пожалуйста, соединение интернет.");
-                tabHost.setCurrentTabByTag(TABS_TAG_4);
             }
 
             return str;
