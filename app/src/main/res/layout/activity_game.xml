@@ -82,7 +82,7 @@
                         android:id="@+id/progress_pt_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#cc2eff20"
+                        android:textColor="#cc26ba3b"
                         android:layout_alignBottom="@id/progressBarPT"
                         android:background="@android:color/transparent"
                         android:gravity="center"

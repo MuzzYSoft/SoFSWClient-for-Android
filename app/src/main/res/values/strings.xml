@@ -5,6 +5,7 @@
     <string name="title_activity_chat">Чат</string>
     <string name="title_activity_cmd">Консоль</string>
     <string name="send">отправить</string>
+    <string name="clr">Очистить</string>
     <string name="cmdHint">команда</string>
     <string name="chatHint">сообщение</string>
     <string name="room_cnt_p">чел.</string>

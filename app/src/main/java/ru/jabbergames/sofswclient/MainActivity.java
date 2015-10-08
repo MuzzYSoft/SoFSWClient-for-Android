@@ -1,43 +1,39 @@
 package ru.jabbergames.sofswclient;
 
+import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.TabActivity;
-import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TabHost;
-import android.widget.Toast;
 import android.widget.TextView;
-import android.app.Activity;
-import android.content.Intent;
+import android.widget.Toast;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -57,16 +53,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -80,6 +73,7 @@ public class MainActivity  extends TabActivity {
     Activity fict;
     private TextView mCmdTextView;
     Button btnCmdSend;
+    Button btnCmdClear;
     ImageButton btnGoEast;
     ImageButton btnGoSouth;
     ImageButton btnGoNorth;
@@ -87,6 +81,7 @@ public class MainActivity  extends TabActivity {
     ImageButton btnCont;
     TabHost tabHost;
     boolean uot;
+    boolean frstTstShw;
     final String TABS_TAG_1 = "game";
     final String TABS_TAG_2 = "coms";
     final String TABS_TAG_3 = "chat";
@@ -102,6 +97,13 @@ public class MainActivity  extends TabActivity {
     View.OnClickListener oclBtnCont = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(frstTstShw) {
+                frstTstShw=false;
+                Toast toastPriv = Toast.makeText(getApplicationContext(),
+                        "Вы нажали кнопку ОК (Enter)", Toast.LENGTH_SHORT);
+                toastPriv.setGravity(Gravity.BOTTOM, -20, 0);
+                toastPriv.show();
+            }
             SendCom("0");
             addLog("0");
         }
@@ -244,7 +246,7 @@ public class MainActivity  extends TabActivity {
                     btncs.setOnClickListener(oclCBtnCmd);
                 } else if (tabId == TABS_TAG_4) {
                     btnCmdSend = (Button) findViewById(R.id.cmdSendButton);
-
+                    btnCmdClear=(Button)findViewById(R.id.cmdClearButton);
                     // создаем обработчик нажатия
                     View.OnClickListener oclBtnCmd = new View.OnClickListener() {
                         @Override
@@ -258,7 +260,18 @@ public class MainActivity  extends TabActivity {
                             mCmdText.setText("");
                         }
                     };
-
+                    // создаем обработчик нажатия для кнопки очистить
+                    View.OnClickListener oclBtnCmdClr = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TextView mCmdText = (TextView)findViewById(R.id.logTextView);
+                            if (mCmdText != null) {
+                                mCmdText.setText("");
+                            }
+                        }
+                    };
+                    // присвоим обработчик кнопке
+                    btnCmdClear.setOnClickListener(oclBtnCmdClr);
                     // присвоим обработчик кнопке
                     btnCmdSend.setOnClickListener(oclBtnCmd);
 
@@ -1258,14 +1271,51 @@ public class MainActivity  extends TabActivity {
                                                 case "Theme":
                                                     switch (setmelement.getTextContent()) {
                                                         case "Dark":
-                                                            Utils.flag=false;
                                                             Utils.isLight=false;
-                                                            Utils.changeToTheme(fict,Utils.THEME_DARK);
                                                             break;
                                                         case "Light":
-                                                            Utils.flag=false;
                                                             Utils.isLight=true;
-                                                            Utils.changeToTheme(fict,Utils.THEME_LIGHT);
+                                                            break;
+                                                    }
+
+                                                    break;
+                                                case "push_rdy":
+                                                    switch (setmelement.getTextContent()) {
+                                                        case "0":
+                                                            Utils.toastHpIsAcc=false;
+                                                            break;
+                                                        case "1":
+                                                            Utils.toastHpIsAcc=true;
+                                                            break;
+                                                    }
+
+                                                    break;
+                                                case "push_prmes":
+                                                    switch (setmelement.getTextContent()) {
+                                                        case "0":
+                                                            Utils.toastPrMesIsAcc=false;
+                                                            break;
+                                                        case "1":
+                                                            Utils.toastPrMesIsAcc=true;
+                                                            break;
+                                                    }
+
+                                                    break;
+                                                case "push_chmes":
+                                                    switch (setmelement.getTextContent()) {
+                                                        case "0":
+                                                            Utils.toastChMesIsAcc=false;
+                                                            Utils.flag=false;
+                                                            if(!Utils.isLight){
+                                                                Utils.changeToTheme(fict,Utils.THEME_DARK);
+                                                            }
+                                                            break;
+                                                        case "1":
+                                                            Utils.toastChMesIsAcc=true;
+                                                            Utils.flag=false;
+                                                            if(!Utils.isLight){
+                                                                Utils.changeToTheme(fict,Utils.THEME_DARK);
+                                                            }
                                                             break;
                                                     }
 
@@ -1352,6 +1402,7 @@ public class MainActivity  extends TabActivity {
             String str="error";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
+
 
             try
             {

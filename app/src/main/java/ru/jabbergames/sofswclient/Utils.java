@@ -17,6 +17,7 @@ public class Utils
     public static boolean isLight=true;
     public static boolean toastHpIsAcc=true;
     public static boolean toastPrMesIsAcc=true;
+    public static boolean toastChMesIsAcc=true;
     public static ArrayList<String> mapC = new ArrayList<String>();
     public static ArrayList<String> mapP = new ArrayList<String>();
     /**
