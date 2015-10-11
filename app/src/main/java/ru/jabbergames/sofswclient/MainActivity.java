@@ -14,8 +14,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -81,17 +81,16 @@ public class MainActivity  extends TabActivity {
     ImageButton btnCont;
     TabHost tabHost;
     boolean uot;
+    public boolean inFight;
     boolean frstTstShw;
-    final String TABS_TAG_1 = "game";
-    final String TABS_TAG_2 = "coms";
-    final String TABS_TAG_3 = "chat";
-    final String TABS_TAG_4 = "cmds";
+    final private String[] tabs = { "Игра", "Команды", "Чат" , "Консоль" };
+    final private String[] tabTags={"game","coms","chat","cmds"};
     private Timer mTimer;
     private MyTimerTask mMyTimerTask;
-
+    private boolean seeHist=false;
     private List<String> ReqGm = new ArrayList<String>();
     private int tick = 0;
-    ArrayList<String> tagsGo = new ArrayList<String>();
+    private String[] tagsGo = {"w","n","s","e","0"};
     //ArrayList<String> mapC = new ArrayList<String>();
     //ArrayList<String> mapP = new ArrayList<String>();
     View.OnClickListener oclBtnCont = new View.OnClickListener() {
@@ -133,34 +132,17 @@ public class MainActivity  extends TabActivity {
         tabHost = getTabHost();
         TabHost.TabSpec spec;
         Intent intent;
-        tagsGo.add("w");
-        tagsGo.add("n");
-        tagsGo.add("s");
-        tagsGo.add("e");
-        tagsGo.add("0");
         TabHost.TabSpec tabSpec;
-        tabSpec = tabHost.newTabSpec(TABS_TAG_1);
-        tabSpec.setContent(TabFactory);
-        tabSpec.setIndicator(getString(R.string.title_activity_game));
-        tabHost.addTab(tabSpec);
-
-        tabSpec = tabHost.newTabSpec(TABS_TAG_2);
-        tabSpec.setContent(TabFactory);
-        tabSpec.setIndicator(getString(R.string.title_activity_com_buts));
-        tabHost.addTab(tabSpec);
-
-        tabSpec = tabHost.newTabSpec(TABS_TAG_3);
-        tabSpec.setContent(TabFactory);
-        tabSpec.setIndicator(getString(R.string.title_activity_chat));
-        tabHost.addTab(tabSpec);
-
-        tabSpec = tabHost.newTabSpec(TABS_TAG_4);
-        tabSpec.setContent(TabFactory);
-        tabSpec.setIndicator(getString(R.string.title_activity_cmd));
-        tabHost.addTab(tabSpec);
+        for(int i=0;i<4;i++)
+        {
+            tabSpec = tabHost.newTabSpec(tabTags[i]);
+            tabSpec.setContent(TabFactory);
+            tabSpec.setIndicator(tabs[i]);
+            tabHost.addTab(tabSpec);
+        }
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             public void onTabChanged(String tabId) {
-                if(tabId == TABS_TAG_1) {
+                if(tabId == tabTags[0]) {
                     btnCont = (ImageButton) findViewById(R.id.comBarButton0);
                     // создаем обработчик нажатия
                     btnGoWest = (ImageButton) findViewById(R.id.comBarButton1);
@@ -207,10 +189,10 @@ public class MainActivity  extends TabActivity {
                     btnGoNorth.setOnClickListener(oclBtnGoNorth);
                     btnGoSouth.setOnClickListener(oclBtnGoSouth);
                     btnGoEast.setOnClickListener(oclBtnGoEast);
-                };
-                if (tabId == TABS_TAG_2) {
+                }
+                else if (tabId == tabTags[1]) {
                     SendCom("getcomms");
-                } else if (tabId == TABS_TAG_3) {
+                } else if (tabId == tabTags[2]) {
                     SendCom("chatmess !chroom? descr");
                     //addLog("chatmess !chroom? descr");
                     LinearLayout ll = (LinearLayout) findViewById(R.id.chatContent);
@@ -228,7 +210,6 @@ public class MainActivity  extends TabActivity {
                     };
                     // присвоим обработчик кнопке
                     btn.setOnClickListener(oclBtnCmd);
-
                     Button btncs = (Button) findViewById(R.id.chatSendButton);
                     // создаем обработчик нажатия
                     View.OnClickListener oclCBtnCmd = new View.OnClickListener() {
@@ -240,11 +221,12 @@ public class MainActivity  extends TabActivity {
                                 addLog("chatmess " + nk + et.getText().toString());
                                 et.setText("");
                             }
+                            seeHist=false;
                         }
                     };
                     // присвоим обработчик кнопке
                     btncs.setOnClickListener(oclCBtnCmd);
-                } else if (tabId == TABS_TAG_4) {
+                } else if (tabId == tabTags[3]) {
                     btnCmdSend = (Button) findViewById(R.id.cmdSendButton);
                     btnCmdClear=(Button)findViewById(R.id.cmdClearButton);
                     // создаем обработчик нажатия
@@ -272,7 +254,6 @@ public class MainActivity  extends TabActivity {
                     };
                     // присвоим обработчик кнопке
                     btnCmdClear.setOnClickListener(oclBtnCmdClr);
-                    // присвоим обработчик кнопке
                     btnCmdSend.setOnClickListener(oclBtnCmd);
 
                     //авторпрокрутка
@@ -281,6 +262,7 @@ public class MainActivity  extends TabActivity {
 
                         @Override
                         public void afterTextChanged(Editable arg0) {
+
                             ScrollView scrollView1 = (ScrollView) findViewById(R.id.scrollViewCons);
                             scrollView1.fullScroll(ScrollView.FOCUS_DOWN);
                             // you can add a toast or whatever you want here
@@ -303,10 +285,10 @@ public class MainActivity  extends TabActivity {
             }
         });
 
-        tabHost.setCurrentTabByTag(TABS_TAG_4);
+        tabHost.setCurrentTabByTag(tabTags[3]);
         SendCom("getmappoints");
         SendCom("0");
-        tabHost.setCurrentTabByTag(TABS_TAG_1);
+        tabHost.setCurrentTabByTag(tabTags[0]);
 
         if (mTimer != null) {
             mTimer.cancel();
@@ -353,16 +335,16 @@ public class MainActivity  extends TabActivity {
 
         @Override
         public View createTabContent(String tag) {
-            if (tag == TABS_TAG_1) {
+            if (tag == tabTags[0]) {
                 return getLayoutInflater().inflate(R.layout.activity_game, null);
-            } else if (tag == TABS_TAG_2) {
+            } else if (tag == tabTags[1]) {
                 /*TextView tv = new TextView(MainActivity.this);
                 tv.setText("Команды");
                 return tv;*/
                 return getLayoutInflater().inflate(R.layout.activity_com_buts, null);
-            } else if (tag == TABS_TAG_3) {
+            } else if (tag == tabTags[2]) {
                 return getLayoutInflater().inflate(R.layout.activity_chat, null);
-            } else if (tag == TABS_TAG_4) {
+            } else if (tag == tabTags[3]) {
                 return getLayoutInflater().inflate(R.layout.activity_cmd, null);
             }
             return null;
@@ -407,7 +389,7 @@ public class MainActivity  extends TabActivity {
                         String com = (String) v.getTag();
                         SendCom(com);
                         addLog(com);
-                        tabHost.setCurrentTabByTag(TABS_TAG_1);
+                        tabHost.setCurrentTabByTag(tabTags[0]);
                     }
                 };
 
@@ -425,6 +407,7 @@ public class MainActivity  extends TabActivity {
 
     private void AddGText(String txt) {
         if (txt != "") {
+            if(txt.contains("бой. (")){inFight=true;} else {inFight=false;}
             LinearLayout ll = (LinearLayout) findViewById(R.id.GameLinearLayout);
             TextView tv = new TextView(MainActivity.this);
             tv.setText(txt);
@@ -500,15 +483,14 @@ public class MainActivity  extends TabActivity {
                             btnCont.setOnClickListener(oclBtnCont);
                         }
                     };
-
                     // присвоим обработчик кнопке
                     btnCont.setOnClickListener(oclBtnCmdS);
                     break;
                 default:
-                        Button btn = new Button(this);
-                        btn.setText(txt);
-                        btn.setTag(kay);
-                        btn.setTransformationMethod(null);
+                    Button btn = new Button(this);
+                    btn.setText(txt);
+                    btn.setTag(kay);
+                    btn.setTransformationMethod(null);
                     if(kay.contains("swtheme")) {
                         if (txt.contains("Выбрана: Светлая тема")) {
                             // создаем обработчик нажатия
@@ -519,11 +501,11 @@ public class MainActivity  extends TabActivity {
                                     String com = (String) v.getTag();
                                     SendCom(com);
                                     addLog(com);
-                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                    tabHost.setCurrentTabByTag(tabTags[0]);
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
-                        } else if (txt.contains("Выбрана: Темная тема")) {
+                        } else{
                             // создаем обработчик нажатия
                             View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
                                 @Override
@@ -532,7 +514,7 @@ public class MainActivity  extends TabActivity {
                                     String com = (String) v.getTag();
                                     SendCom(com);
                                     addLog(com);
-                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                    tabHost.setCurrentTabByTag(tabTags[0]);
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
@@ -548,12 +530,12 @@ public class MainActivity  extends TabActivity {
                                     String com = (String) v.getTag();
                                     SendCom(com);
                                     addLog(com);
-                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                    tabHost.setCurrentTabByTag(tabTags[0]);
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
                         }
-                        else if(txt.contains("включены")) {
+                        else{
                             // создаем обработчик нажатия
                             View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
                                 @Override
@@ -562,7 +544,7 @@ public class MainActivity  extends TabActivity {
                                     String com = (String) v.getTag();
                                     SendCom(com);
                                     addLog(com);
-                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                    tabHost.setCurrentTabByTag(tabTags[0]);
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
@@ -578,12 +560,12 @@ public class MainActivity  extends TabActivity {
                                     String com = (String) v.getTag();
                                     SendCom(com);
                                     addLog(com);
-                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                    tabHost.setCurrentTabByTag(tabTags[0]);
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
                         }
-                        else if(txt.contains("включены")) {
+                        else{
                             // создаем обработчик нажатия
                             View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
                                 @Override
@@ -592,13 +574,14 @@ public class MainActivity  extends TabActivity {
                                     String com = (String) v.getTag();
                                     SendCom(com);
                                     addLog(com);
-                                    tabHost.setCurrentTabByTag(TABS_TAG_1);
+                                    tabHost.setCurrentTabByTag(tabTags[0]);
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
                         }
                     }
                     else{
+
                         // создаем обработчик нажатия
                         View.OnClickListener oclBtnCmd = new View.OnClickListener() {
                             @Override
@@ -610,8 +593,26 @@ public class MainActivity  extends TabActivity {
                         };
                         // присвоим обработчик кнопке
                         btn.setOnClickListener(oclBtnCmd);
+                        if(inFight){
+                            btnCont.setTag(kay);
+                            // создаем обработчик нажатия
+                            View.OnClickListener oclBtnCmddd = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    inFight=false;
+                                    String com = (String) v.getTag();
+                                    SendCom(com);
+                                    addLog(com);
+                                }
+                            };
+                            btnCont = (ImageButton) findViewById(R.id.comBarButton0);
+                            btnCont.setOnClickListener(oclBtnCmddd);
+                        }else{
+                            btnCont = (ImageButton) findViewById(R.id.comBarButton0);
+                            btnCont.setOnClickListener(oclBtnCont);
+                        }
                     }
-                        ll.addView(btn);
+                    ll.addView(btn);
                     break;
             }
         }
@@ -634,7 +635,7 @@ public class MainActivity  extends TabActivity {
             if (hp.equals(hpmax) & uot) {
                 uot = false;
                 Toast toastPriv = Toast.makeText(getApplicationContext(),
-                        "Жизни героя восстановлены!", Toast.LENGTH_LONG);
+                        "Жизни героя восстановлены!", Toast.LENGTH_SHORT);
                 toastPriv.setGravity(Gravity.BOTTOM, 0, 0);
                 toastPriv.show();
             } else if (!hp.equals(hpmax)) {
@@ -735,6 +736,7 @@ public class MainActivity  extends TabActivity {
                         tv.setText("=================");
                         tv.setGravity(Gravity.CENTER_HORIZONTAL);
                         ll.addView(tv, 1);
+                        seeHist=true;
                         SendCom("chatmess !history " + Integer.toString(chatminid));
                         addLog("chatmess !history "+Integer.toString(chatminid));
                     }
@@ -781,7 +783,7 @@ public class MainActivity  extends TabActivity {
                 String ffrom;
                 ffrom=from;
                 Toast toastPriv = Toast.makeText(getApplicationContext(),
-                        "Приватное сообщение от" + ffrom, Toast.LENGTH_LONG);
+                        "Приватное сообщение от " + ffrom, Toast.LENGTH_SHORT);
                 toastPriv.setGravity(Gravity.BOTTOM, 0, 0);
                 toastPriv.show();
             }
@@ -810,61 +812,57 @@ public class MainActivity  extends TabActivity {
             ll.addView(btn, 1);
         } else {
             ll.addView(btn);
-            ScrollView scrollView1 = (ScrollView) findViewById(R.id.scrollViewChat);
-            scrollView1.fullScroll(ScrollView.FOCUS_DOWN);
+            if (!seeHist) {
+                ScrollView scrollView1 = (ScrollView) findViewById(R.id.scrollViewChat);
+                scrollView1.fullScroll(ScrollView.FOCUS_DOWN);
+            }
         }
-
-
-
     }
 
     private String nk = "";
-
     private void showChPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);
 
         //popupMenu.inflate(R.menu.popupmenu); // Для Android 4.0
         // для версии Android 3.0 нужно использовать длинный вариант
         popupMenu.getMenuInflater().inflate(R.menu.chat_pmenu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
-        popupMenu
-                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        TextView tv = (TextView)  findViewById(R.id.chatToTextView);
-                        switch (item.getItemId()) {
-                            case R.id.menu1:
-                                String t = tv.getText().toString();
-                                if (t.indexOf("Приватно ")==0) tv.setText(nk + ", ");
-                                else tv.setText(t + nk + ", ");
-                                nk = tv.getText().toString();
-                                return true;
-                            case R.id.menu2:
-                                tv.setText("Приватно " + nk);
-                                nk = "!private "+nk+" ";
-                                return true;
-                            case R.id.menu3:
-                                SendCom("05 " + nk);
-                                addLog("05 " + nk);
-                                nk = "";
-                                tabHost.setCurrentTabByTag(TABS_TAG_1);
-                                return true;
-                            case R.id.menu4:
-                                SendCom("chatmess !chroom? ulist");
-                                addLog("chatmess !chroom? ulist");
-                                return true;
-                            case R.id.menu5:
-                                tv.setText("");
-                                EditText et = (EditText) findViewById(R.id.chatText);
-                                et.setText("");
-                                nk = "";
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                TextView tv = (TextView) findViewById(R.id.chatToTextView);
+                switch (item.getItemId()) {
+                    case R.id.menu1:
+                        String t = tv.getText().toString();
+                        if (t.indexOf("Приватно ") == 0) tv.setText(nk + ", ");
+                        else tv.setText(t + nk + ", ");
+                        nk = tv.getText().toString();
+                        return true;
+                    case R.id.menu2:
+                        tv.setText("Приватно " + nk);
+                        nk = "!private " + nk + " ";
+                        return true;
+                    case R.id.menu3:
+                        SendCom("05 " + nk);
+                        addLog("05 " + nk);
+                        nk = "";
+                        tabHost.setCurrentTabByTag(tabTags[0]);
+                        return true;
+                    case R.id.menu4:
+                        SendCom("chatmess !chroom? ulist");
+                        addLog("chatmess !chroom? ulist");
+                        return true;
+                    case R.id.menu5:
+                        tv.setText("");
+                        EditText et = (EditText) findViewById(R.id.chatText);
+                        et.setText("");
+                        nk = "";
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
 
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
 
@@ -935,7 +933,7 @@ public class MainActivity  extends TabActivity {
         Canvas tempCanvas = new Canvas(tempBitmap);
         Bitmap image;
         if(Utils.isLight){
-        image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
             prom=Bitmap.createScaledBitmap(image,iv.getWidth(), iv.getHeight(), false);
             tempCanvas.drawBitmap(prom, 0, 0, null);}
         else {
@@ -960,7 +958,7 @@ public class MainActivity  extends TabActivity {
         int cx = Integer.parseInt(x);
         int cy = Integer.parseInt(y);
         String tx; String ty;
-            image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
         int rz = image.getHeight();
         int hmc = (int)(iv.getWidth()/2)-1;
         int vmc = (int)(iv.getHeight()/2);
@@ -977,17 +975,17 @@ public class MainActivity  extends TabActivity {
                     if(Utils.isLight) {
                         gogo="_l";
                     } else {gogo="_d";}
-                        try {
-                            Class res = R.drawable.class;
-                            Field field = res.getField(Utils.mapP.get(pt).toString() + gogo);
-                            int drawableId = field.getInt(null);
-                            image = BitmapFactory.decodeResource(r, drawableId);
-                            //image.setPremultiplied(true);
-                            //image.setHasAlpha(true);
-                            tempCanvas.drawBitmap(image, hmc + i * rz, vmc - j * rz, transparentpaint);
-                        } catch (Exception e) {
+                    try {
+                        Class res = R.drawable.class;
+                        Field field = res.getField(Utils.mapP.get(pt).toString() + gogo);
+                        int drawableId = field.getInt(null);
+                        image = BitmapFactory.decodeResource(r, drawableId);
+                        //image.setPremultiplied(true);
+                        //image.setHasAlpha(true);
+                        tempCanvas.drawBitmap(image, hmc + i * rz, vmc - j * rz, transparentpaint);
+                    } catch (Exception e) {
 
-                        }
+                    }
                     //int drawableId = r.getIdentifier(mapP.get(pt).toString()+"_l", "drawable", "ru.jabbergames.sofswclient");
                 }
             }
@@ -1001,7 +999,7 @@ public class MainActivity  extends TabActivity {
     public void RespPars(String resp) {
         if(resp.indexOf("error")==0){
             addLog("Ошибка. Проверьте, пожалуйста, соединение интернет.");
-            tabHost.setCurrentTabByTag(TABS_TAG_4);
+            tabHost.setCurrentTabByTag(tabTags[3]);
         } else {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             try {
@@ -1035,7 +1033,7 @@ public class MainActivity  extends TabActivity {
                                                                 Element gelement = (Element) lnodes.item(l);
                                                                 switch (gelement.getNodeName()) {
                                                                     case "lynk":
-                                                                            AddLnkButt(gelement.getAttribute("text"), gelement.getAttribute("a"));
+                                                                        AddLnkButt(gelement.getAttribute("text"), gelement.getAttribute("a"));
                                                                         break;
                                                                 }
                                                             } catch (Exception e) {
@@ -1370,7 +1368,7 @@ public class MainActivity  extends TabActivity {
             } catch (Exception e) {
                 // TODO: handle exception
                 addLog("Ошибка. Возможно следует проверить соединение интернет.");
-                tabHost.setCurrentTabByTag(TABS_TAG_4);
+                tabHost.setCurrentTabByTag(tabTags[3]);
             }
             ProgressBar pb = (ProgressBar) findViewById(R.id.progressBarMine);
             pb.setVisibility(View.INVISIBLE);
@@ -1403,14 +1401,13 @@ public class MainActivity  extends TabActivity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
 
-
             try
             {
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                 nameValuePairs.add(new BasicNameValuePair("i", getDeviceId()));
                 nameValuePairs.add(new BasicNameValuePair("j", params[0]));
                 nameValuePairs.add(new BasicNameValuePair("v", ClVer));
-                        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8));
                 HttpResponse response = httpclient.execute(httppost);
 
                 HttpEntity httpEntity = response.getEntity();

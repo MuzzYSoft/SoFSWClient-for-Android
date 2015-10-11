@@ -27,26 +27,26 @@
                 android:singleLine="true"
                 android:hint="@string/cmdHint" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="199dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/send"
-                    android:id="@+id/cmdSendButton" />
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/clr"
-                    android:id="@+id/cmdClearButton" />
-            </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="199dp"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            android:id="@+id/cmdSendButton" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/clr"
+            android:id="@+id/cmdClearButton" />
+    </LinearLayout>
 </LinearLayout>
 
