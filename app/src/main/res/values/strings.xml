@@ -17,6 +17,7 @@
     <string name="chatMenuPersInfo">Информация о персонаже</string>
     <string name="chatMenuWho">Кто здесь?</string>
     <string name="chatMenuClear">Очистить поля</string>
+    <string name="OK">OK</string>
     <color name="light_color">#eeeeee</color>
     <color name="dark_color">#333333</color>
 </resources>

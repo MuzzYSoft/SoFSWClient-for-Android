@@ -67,7 +67,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity  extends TabActivity {
     private String deviceId;
-    private String ClVer = "a.1.0.1.8";
+    private String ClVer = "a.1.0.3.7";
     private int STextEditID;
     int chatminid = 2147483647;
     Activity fict;
@@ -240,6 +240,7 @@ public class MainActivity  extends TabActivity {
                                 addLog(mCmdText.getText().toString());
                             }
                             mCmdText.setText("");
+
                         }
                     };
                     // создаем обработчик нажатия для кнопки очистить
@@ -485,6 +486,11 @@ public class MainActivity  extends TabActivity {
                     };
                     // присвоим обработчик кнопке
                     btnCont.setOnClickListener(oclBtnCmdS);
+
+                    Button btnok = new Button(this);
+                    btnok.setText(R.string.OK);
+                    btnok.setOnClickListener(oclBtnCmdS);
+                    ll.addView(btnok);
                     break;
                 default:
                     Button btn = new Button(this);
@@ -1400,6 +1406,7 @@ public class MainActivity  extends TabActivity {
             String str="error";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
+
 
             try
             {
