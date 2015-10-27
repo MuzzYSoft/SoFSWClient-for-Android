@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class Utils
 {
     private static int sTheme;
+    public static boolean seeHist=false;
+    public static boolean inFight=false;
     public final static int THEME_LIGHT = 0;
     public final static int THEME_DARK = 1;
     public static boolean flag=true;

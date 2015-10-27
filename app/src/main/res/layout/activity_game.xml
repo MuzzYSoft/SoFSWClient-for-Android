@@ -112,31 +112,50 @@
                     android:layout_height="160dp"
                     android:id="@+id/map"
                     android:layout_weight="20"
+                    android:cropToPadding="false"
                     android:background="@drawable/background_l" />
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    xmlns:android="http://schemas.android.com/apk/res/android">
-                    <TextView
-                        android:id="@+id/player_name_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="">
-                    </TextView>
-                    <TextView
-                        android:id="@+id/player_lev_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="">
-                    </TextView>
-                    <TextView
-                        android:id="@+id/player_atten_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#ccff0e15"
-                        android:text="">
-                    </TextView>
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/player_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/player_lev_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="">
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/player_atten_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ccff0e15"
+                            android:text="">
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/chatMes"
+                            android:singleLine="false"
+                            android:gravity="right" />
+                    </LinearLayout>
+
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="vertical"
@@ -148,6 +167,7 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
+
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"

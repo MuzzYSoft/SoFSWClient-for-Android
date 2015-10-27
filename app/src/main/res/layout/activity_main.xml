@@ -1,46 +1,19 @@
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/tabhost"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_weight="30"
-        android:layout_height="wrap_content"
-        android:visibility="visible" >
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/titlestrip"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:dividerPadding="1dp" />
-        <FrameLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@android:id/tabcontent"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:padding="2dp" />
-        </LinearLayout>
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ProgressBar
-                style="@android:style/Widget.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/progressBarMine"
-                android:layout_gravity="center_horizontal"
-                android:indeterminate="true"
-                android:indeterminateOnly="true"
-                android:visibility="visible"
-                android:padding="10dp" />
-        </LinearLayout>
-    </RelativeLayout>
-</TabHost>
+            android:layout_gravity="top">
+        </android.support.v4.view.PagerTabStrip>
+    </android.support.v4.view.ViewPager>
+</RelativeLayout>

@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="bottom">
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -26,6 +27,7 @@
                 android:id="@+id/cmdText"
                 android:singleLine="true"
                 android:hint="@string/cmdHint" />
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -47,7 +49,9 @@
                     android:text="@string/clr"
                     android:id="@+id/cmdClearButton" />
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
 
