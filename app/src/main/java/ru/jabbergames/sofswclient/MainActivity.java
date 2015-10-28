@@ -662,6 +662,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
             String str="error";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
+            //HttpPost httppost = new HttpPost("http://10.22.0.21/g.php");
 
             try
             {
