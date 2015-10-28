@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SoFSWClient-for-Android.iml" filepath="$PROJECT_DIR$/SoFSWClient-for-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SoFSWClient.iml" filepath="$PROJECT_DIR$/SoFSWClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
