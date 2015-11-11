@@ -121,9 +121,11 @@ public class ChatFragment extends Fragment {
             ll.addView(btn);
     }
 
-    protected void AddToChat(String from, String to, String message, String dtime, boolean priv, boolean totop,View v) {
+    protected void AddToChat(String from, String to, String message, String dtime, boolean priv, boolean totop, int tid, View v) {
 
             LinearLayout ll = (LinearLayout) v.findViewById(R.id.chatContent);
+
+            if (chatminid > tid) chatminid = tid;
 
             //кнопка загрузки истории
             if (ll.getChildCount() > 0) {
@@ -273,6 +275,7 @@ public class ChatFragment extends Fragment {
                             nk = "";
                             return true;
                         default:
+                            nk = "";
                             return false;
                     }
                 }

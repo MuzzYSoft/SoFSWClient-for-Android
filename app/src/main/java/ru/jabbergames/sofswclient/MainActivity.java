@@ -54,9 +54,8 @@ import ru.jabbergames.sofswclient.GameFragment.onSomeEventListenerGm;
 public class MainActivity extends FragmentActivity implements onSomeEventListenerCh,onSomeEventListenerGm,onSomeEventListenerCom,onSomeEventListenerCmd {
 
     private String deviceId;
-    private String ClVer = "a.1.0.5.7";
+    private String ClVer = "a.1.0.7.7";
     private int STextEditID;
-    int chatminid = 2147483647;
     private Timer mTimer;
     private MyTimerTask mMyTimerTask;
     private boolean seeHist=false;
@@ -308,7 +307,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                     case "mid":
                                                         String ts = gelement.getTextContent();
                                                         tid = Integer.parseInt(ts);
-                                                        if (chatminid > tid) chatminid = tid;
+                                                        //if (chatminid > tid) chatminid = tid;
                                                         break;
                                                     default:
                                                         break;
@@ -336,10 +335,10 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                             try {
                                                 switch (element.getAttribute("room")) {
                                                     case "private":
-                                                        chatFr.AddToChat(from, to, mtext, dtime, true, totop,chatFr.getView());
+                                                        chatFr.AddToChat(from, to, mtext, dtime, true, totop, tid, chatFr.getView());
                                                         break;
                                                     default:
-                                                        chatFr.AddToChat(from, to, mtext, dtime, false, totop,chatFr.getView());
+                                                        chatFr.AddToChat(from, to, mtext, dtime, false, totop, tid, chatFr.getView());
                                                         break;
                                                 }
                                             } catch (Exception e) {
