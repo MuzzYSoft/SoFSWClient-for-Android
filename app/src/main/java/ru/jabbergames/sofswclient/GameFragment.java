@@ -188,8 +188,9 @@ public class GameFragment extends Fragment {
                     btn.setText(txt);
                     btn.setTag(kay);
                     btn.setTransformationMethod(null);
-                    if(kay.contains("swtheme")) {
-                        if (txt.contains("Выбрана: Светлая тема")) {
+                    switch(kay){
+                        case "SETTINGS swtheme":
+                            if (txt.contains("Выбрана: Светлая тема")) {
                             // создаем обработчик нажатия
                             View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
                                 @Override
@@ -203,117 +204,119 @@ public class GameFragment extends Fragment {
                                 }
                             };
                             btn.setOnClickListener(oclBtnCmdd);
-                        } else{
-                            // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Utils.changeToTheme(getActivity(), Utils.THEME_LIGHT);
-                                    someEventListenerGm.ChangeTitle(true);
-                                    String com = (String) v.getTag();
-                                    someEventListenerGm.SendCom(com);
-                                    someEventListenerGm.addLog(com);
-                                    //tabHost.setCurrentTabByTag(tabTags[0]);
-                                }
-                            };
+                            } else{
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.changeToTheme(getActivity(), Utils.THEME_LIGHT);
+                                        someEventListenerGm.ChangeTitle(true);
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                        //tabHost.setCurrentTabByTag(tabTags[0]);
+                                    }
+                                };
                             btn.setOnClickListener(oclBtnCmdd);
-                        }
-                    }else if(kay.contains("swpush_rdy")) {
-                        if(txt.contains("выключены"))
-                        {
-                            // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Utils.toastHpIsAcc=true;
-                                    String com = (String) v.getTag();
-                                    someEventListenerGm.SendCom(com);
-                                    someEventListenerGm.addLog(com);
-                                    //tabHost.setCurrentTabByTag(tabTags[0]);
-                                }
-                            };
-                            btn.setOnClickListener(oclBtnCmdd);
-                        }
-                        else{
-                            // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Utils.toastHpIsAcc=false;
-                                    String com = (String) v.getTag();
-                                    someEventListenerGm.SendCom(com);
-                                    someEventListenerGm.addLog(com);
-                                    //tabHost.setCurrentTabByTag(tabTags[0]);
-                                }
-                            };
-                            btn.setOnClickListener(oclBtnCmdd);
-                        }
-                    }else if(kay.contains("swpush_prmes")) {
-                        if(txt.contains("выключены"))
-                        {
-                            // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Utils.toastPrMesIsAcc=true;
-                                    String com = (String) v.getTag();
-                                    someEventListenerGm.SendCom(com);
-                                    someEventListenerGm.addLog(com);
-                                    //tabHost.setCurrentTabByTag(tabTags[0]);
-                                }
-                            };
-                            btn.setOnClickListener(oclBtnCmdd);
-                        }
-                        else{
-                            // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Utils.toastPrMesIsAcc=false;
-                                    String com = (String) v.getTag();
-                                    someEventListenerGm.SendCom(com);
-                                    someEventListenerGm.addLog(com);
-                                    //tabHost.setCurrentTabByTag(tabTags[0]);
-                                }
-                            };
-                            btn.setOnClickListener(oclBtnCmdd);
-                        }
-                    }
-                    else{
-
-                        // создаем обработчик нажатия
-                        View.OnClickListener oclBtnCmd = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String com = (String) v.getTag();
-                                someEventListenerGm.SendCom(com);
-                                someEventListenerGm.addLog(com);
                             }
-                        };
-                        // присвоим обработчик кнопке
-                        btn.setOnClickListener(oclBtnCmd);
-                        if(Utils.inFight){
-                            btnCont.setTag(kay);
+                            break;
+                        case "SETTINGS swpush_rdy":
+                            if(txt.contains("выключены"))
+                            {
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.toastHpIsAcc=true;
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                        //tabHost.setCurrentTabByTag(tabTags[0]);
+                                    }
+                                };
+                            btn.setOnClickListener(oclBtnCmdd);
+                            }
+                            else{
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.toastHpIsAcc=false;
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                        //tabHost.setCurrentTabByTag(tabTags[0]);
+                                    }
+                                };
+                                btn.setOnClickListener(oclBtnCmdd);
+                            }
+                            break;
+                        case "SETTINGS swpush_prmes":
+                            if(txt.contains("выключены"))
+                            {
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.toastPrMesIsAcc=true;
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                        //tabHost.setCurrentTabByTag(tabTags[0]);
+                                    }
+                                };
+                                btn.setOnClickListener(oclBtnCmdd);
+                            }
+                            else{
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.toastPrMesIsAcc=false;
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                        //tabHost.setCurrentTabByTag(tabTags[0]);
+                                    }
+                                };
+                                btn.setOnClickListener(oclBtnCmdd);
+                            }
+                            break;
+                        default:
                             // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmddd = new View.OnClickListener() {
+                            View.OnClickListener oclBtnCmd = new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Utils.inFight=false;
                                     String com = (String) v.getTag();
                                     someEventListenerGm.SendCom(com);
                                     someEventListenerGm.addLog(com);
                                 }
                             };
-                            btnCont = (ImageButton) v.findViewById(R.id.comBarButton0);
-                            btnCont.setOnClickListener(oclBtnCmddd);
-                        }else{
-                            btnCont = (ImageButton) v.findViewById(R.id.comBarButton0);
-                            btnCont.setOnClickListener(oclBtnCont);
+                            // присвоим обработчик кнопке
+                            btn.setOnClickListener(oclBtnCmd);
+                            if(Utils.inFight){
+                                btnCont.setTag(kay);
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmddd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.inFight=false;
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                    }
+                                };
+                                btnCont = (ImageButton) v.findViewById(R.id.comBarButton0);
+                                btnCont.setOnClickListener(oclBtnCmddd);
+                            }else{
+                                btnCont = (ImageButton) v.findViewById(R.id.comBarButton0);
+                                btnCont.setOnClickListener(oclBtnCont);
+                            }
+                            break;
                         }
-                    }
-                    ll.addView(btn);
-                    break;
-            }
+                        ll.addView(btn);
+                        break;
+                }
         }
     }
 
@@ -393,7 +396,7 @@ public class GameFragment extends Fragment {
             Canvas tempCanvas = new Canvas(tempBitmap);
             Bitmap image;
             if (Utils.isLight) {
-                image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
+                image = BitmapFactory.decodeResource(getResources(), R.drawable.background_trans);
                 prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
                 tempCanvas.drawBitmap(prom, 0, 0, null);
             } else {

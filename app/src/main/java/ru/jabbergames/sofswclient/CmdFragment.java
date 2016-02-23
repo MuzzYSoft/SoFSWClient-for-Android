@@ -28,6 +28,7 @@ public class CmdFragment extends Fragment {
             throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
         }
     }
+    int countLogMes=0;
     View vv;
     Button btnCmdSend;
     Button btnCmdClear;
@@ -105,6 +106,11 @@ public class CmdFragment extends Fragment {
             TextView mCmdText = (TextView) getView().findViewById(R.id.logTextView);
             if (mCmdText != null) {
                 mCmdText.append("\n\r" + addstr);
+                countLogMes++;
+                if(countLogMes>300){
+                    mCmdText.setText("");
+                    countLogMes=0;
+                }
             }
         }
     }

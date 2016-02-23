@@ -97,14 +97,16 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         pager = (ViewPager)findViewById(R.id.viewpager);
         titlestrip=(PagerTabStrip)findViewById(R.id.titlestrip);
         if(!Utils.isLight){
+            pager.setBackgroundResource(R.drawable.background_d);
             titlestrip.setTextColor(Color.WHITE);
-            titlestrip.setBackgroundColor(Color.BLACK);
+            titlestrip.setBackgroundColor(Color.TRANSPARENT);
         }else{
+            pager.setBackgroundResource(R.drawable.background_l);
             titlestrip.setTextColor(Color.BLACK);
-            titlestrip.setBackgroundColor(Color.WHITE);
+            titlestrip.setBackgroundColor(Color.TRANSPARENT);
         }
         if(Build.VERSION.SDK_INT>Build.VERSION_CODES.GINGERBREAD_MR1){
-        pager.setPageTransformer(true,new ZoomOutPageTransformer());}
+        pager.setPageTransformer(true, new ZoomOutPageTransformer());}
         pager.setAdapter(pageAdapter);
         pager.setOffscreenPageLimit(4);
         if (mTimer != null) {
@@ -123,10 +125,10 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
     public void ChangeTitle(boolean light){
         if(light) {
             titlestrip.setTextColor(Color.BLACK);
-            titlestrip.setBackgroundColor(Color.WHITE);
+            titlestrip.setBackgroundColor(Color.TRANSPARENT);
         }
         else {
-            titlestrip.setTextColor(Color.WHITE);
+            titlestrip.setTextColor(Color.TRANSPARENT);
             titlestrip.setBackgroundColor(Color.BLACK);
         }
     }

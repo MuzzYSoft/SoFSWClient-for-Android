@@ -113,7 +113,7 @@
                     android:id="@+id/map"
                     android:layout_weight="20"
                     android:cropToPadding="false"
-                    android:background="@drawable/background_l" />
+                    android:baselineAlignBottom="false" />
 
                 <LinearLayout
                     android:orientation="horizontal"
