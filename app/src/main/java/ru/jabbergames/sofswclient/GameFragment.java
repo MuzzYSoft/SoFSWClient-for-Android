@@ -9,8 +9,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTabStrip;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerTabStrip;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -396,7 +396,7 @@ public class GameFragment extends Fragment {
             Canvas tempCanvas = new Canvas(tempBitmap);
             Bitmap image;
             if (Utils.isLight) {
-                image = BitmapFactory.decodeResource(getResources(), R.drawable.background_trans);
+                image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
                 prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
                 tempCanvas.drawBitmap(prom, 0, 0, null);
             } else {
