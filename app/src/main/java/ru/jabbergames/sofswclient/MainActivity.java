@@ -57,6 +57,8 @@ import ru.jabbergames.sofswclient.CommsFragment.onSomeEventListenerCom;
 import ru.jabbergames.sofswclient.GameFragment.onSomeEventListenerGm;
 public class MainActivity extends FragmentActivity implements onSomeEventListenerCh,onSomeEventListenerGm,onSomeEventListenerCom,onSomeEventListenerCmd {
 
+    AsyncTask<?, ?, ?> runningTask;
+
     private static final int RC_SIGN_IN = 0;
     private String deviceId;
     private String ClVer = "a.1.0.7.7";
@@ -66,7 +68,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
     private boolean seeHist=false;
     PagerTabStrip titlestrip;
     int countNewMessage=0;
-    String[] title = {"ИГРА", "КОМАНДЫ", "ЧАТ", "КОНСОЛЬ"};
+    String[] title = {"\uD83C\uDFAE ИГРА", "⚙️ КОМАНДЫ", "\uD83D\uDCAC ЧАТ", "\uD83D\uDD27 КОНСОЛЬ"};
     private List<String> ReqGm = new ArrayList<String>();
     private int tick = 0;
     ViewPager pager;
@@ -95,6 +97,8 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
 
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
+        //setDeviceId("test@test.ru");
 
         List<Fragment> fragments = getFragments();
         gmFr=(GameFragment)fragments.get(0);
@@ -150,7 +154,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            cmdFr.addLog("signInResult:failed code=" + e.getStatusCode());
+            cmdFr.addLog("signInResult:failed code=" + e.getStatusCode() + " " + e.getMessage());
             //updateUI(null);
         }
     }
@@ -178,19 +182,20 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(pager.getCurrentItem()==2)
-                    gmFr.setCountNewMessage(2);
-                    if (ReqGm.size() != 0) { //(ReqCur == ReqCnt) {
-                        String com = ReqGm.get(0);
-                        SendComN(com);
-                        ReqGm.remove(0);
-                    } else {
-                        if (tick > 4)
-                        {
-                            SendComN("000");
-                            tick = 0;
+                    if (getDeviceId() != null) {
+                        if (pager.getCurrentItem() == 2)
+                            gmFr.setCountNewMessage(2);
+                        if (ReqGm.size() != 0) { //(ReqCur == ReqCnt) {
+                            String com = ReqGm.get(0);
+                            SendComN(com);
+                            ReqGm.remove(0);
                         } else {
-                            tick += 1;
+                            if (tick > 4) {
+                                SendComN("000");
+                                tick = 0;
+                            } else {
+                                tick += 1;
+                            }
                         }
                     }
                 }
@@ -635,6 +640,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                     RespPars(result);
                 }
             }.execute(SpecialXmlEscape(cstr));
+
         } else {
             cmdFr.addLog("---");
         }
@@ -699,7 +705,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         protected String doInBackground(String... params) {
             String str="error";
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://sofsw.jabbergames.ru/g.php");
+            HttpPost httppost = new HttpPost("https://sofsw.jabbergames.ru/g.php");
 
             try
             {
