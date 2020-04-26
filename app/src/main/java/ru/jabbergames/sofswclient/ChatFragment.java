@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.PopupMenu;
+
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -74,6 +76,11 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EditText et = (EditText) vc.findViewById(R.id.chatText);
+                TextView tv = (TextView) vc.findViewById(R.id.chatToTextView);
+                String disp = tv.getText().toString();
+                if (disp.length() == 0){
+                    nk = "";
+                }
                 if (et.getText().length() > 0) {
                     someEventListener.SendCom("chatmess " + nk + et.getText().toString());
                     someEventListener.addLog("chatmess " + nk + et.getText().toString());
@@ -124,6 +131,14 @@ public class ChatFragment extends Fragment {
     protected void AddToChat(String from, String to, String message, String dtime, boolean priv, boolean totop, int tid, View v) {
 
             LinearLayout ll = (LinearLayout) v.findViewById(R.id.chatContent);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            int marginInDp = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 3, getResources()
+                            .getDisplayMetrics());
+            lp.setMargins(marginInDp, marginInDp, marginInDp, marginInDp);
+            lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
 
             if (chatminid > tid) chatminid = tid;
 
@@ -132,6 +147,10 @@ public class ChatFragment extends Fragment {
                 Button ghbtn = (Button) ll.getChildAt(0);
                 if (!ghbtn.getTag().toString().equals("ghbtn")) {
                     ghbtn = new Button(getActivity());
+                    ghbtn.setBackgroundColor(0x98838383);
+                    ghbtn.setLayoutParams(lp);
+                    ghbtn.setGravity(Gravity.START);
+                    ghbtn.setTransformationMethod(null);
                     ghbtn.setText("старые сообщения");
                     ghbtn.setTag("ghbtn");
                     // создаем обработчик нажатия
@@ -184,6 +203,10 @@ public class ChatFragment extends Fragment {
             }
 
             Button btn = new Button(getActivity());
+            btn.setBackgroundColor(0x98838383);
+            btn.setLayoutParams(lp);
+            btn.setGravity(Gravity.START);
+            btn.setTransformationMethod(null);
             someEventListener.isChatFr();
             if (priv) {
                 if (Utils.toastPrMesIsAcc) {

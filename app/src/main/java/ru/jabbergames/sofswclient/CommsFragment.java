@@ -3,11 +3,15 @@ package ru.jabbergames.sofswclient;
 import android.app.Activity;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 public class CommsFragment extends Fragment {
     public interface onSomeEventListenerCom {
@@ -50,6 +54,18 @@ public class CommsFragment extends Fragment {
             if (txt != "") {
                 LinearLayout ll = (LinearLayout) v.findViewById(R.id.ComButtLay);
                 Button btn = new Button(getActivity());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                int marginInDp = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 3, getResources()
+                                .getDisplayMetrics());
+                lp.setMargins(marginInDp, marginInDp, marginInDp, marginInDp);
+                lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                btn.setBackgroundColor(0x98838383);
+                btn.setLayoutParams(lp);
+                btn.setGravity(Gravity.START);
+                btn.setTransformationMethod(null);
                 btn.setText(txt);
                 btn.setTag(kay);
                 // создаем обработчик нажатия

@@ -71,6 +71,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
     String[] title = {"\uD83C\uDFAE ИГРА", "⚙️ КОМАНДЫ", "\uD83D\uDCAC ЧАТ", "\uD83D\uDD27 КОНСОЛЬ"};
     private List<String> ReqGm = new ArrayList<String>();
     private int tick = 0;
+    private int tock = 0;
     ViewPager pager;
     GameFragment gmFr;
     ChatFragment chatFr;
@@ -131,6 +132,10 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         SendCom("0");
     }
 
+    public void onchatMesClick(View view) {
+        setCurrentIt(2);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -150,7 +155,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
 
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
-            setDeviceId(account.getEmail());
+            setDeviceId(account.getEmail()+"|"+account.getId());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -193,6 +198,12 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                             if (tick > 4) {
                                 SendComN("000");
                                 tick = 0;
+                                if(tock>5){
+                                    SendCom("getcomms");
+                                    tock = 0;
+                                } else{
+                                    tock += 1;
+                                }
                             } else {
                                 tick += 1;
                             }
@@ -481,6 +492,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                 break;
                             case "Commands":
                                 commsFr.ClearButtc();
+                                gmFr.ClearButtc();
                                 NodeList mnodes = nodes.item(i).getChildNodes();
                                 for (int j = 0; j < mnodes.getLength(); j++) {
                                     try {
@@ -503,6 +515,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                             }
                                         }
                                         commsFr.AddButC(kay, ctxt,commsFr.getView());
+                                        gmFr.AddButC(kay, ctxt,gmFr.getView());
                                     } catch (Exception e) {
                                         // TODO: handle exception
                                     }

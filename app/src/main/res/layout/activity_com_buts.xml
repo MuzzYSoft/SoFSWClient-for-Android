@@ -1,31 +1,40 @@
-<ScrollView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ComButtScroll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_gravity="center_vertical">
 
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:gravity="center_horizontal">
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/ComButtLay">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ComButtLay"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"></LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="соглашение, правила, сайт игры"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dip"
+            android:layout_marginTop="3dip"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="3dip"
+            android:autoLink="web"
+            android:background="#98838383"
+            android:gravity="left|center_vertical"
+            android:text=" 🌐 http://jabbergames.ru/rules" />
     </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="соглашение, правила, сайт игры"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:text="http://jabbergames.ru/rules"
-        android:id="@+id/button" />
-</LinearLayout>
 </ScrollView>

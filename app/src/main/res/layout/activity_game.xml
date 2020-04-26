@@ -1,228 +1,247 @@
-<RelativeLayout
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/linearLayout">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false">
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_weight="30"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible" >
 
-                    <ProgressBar
-                        android:id="@+id/progressBarHP"
-                        style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:max="12"
-                        android:progress="0"
-                        android:progressDrawable="@drawable/progressbarhp">
-                    </ProgressBar>
-                    <TextView
-                        android:id="@+id/progress_hp_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="#ccff0e15"
-                        android:layout_alignBottom="@id/progressBarHP"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:text="">
-                    </TextView>
-                </RelativeLayout>
-                <RelativeLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="30"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible" >
-                    <ProgressBar
-                        style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/progressBarSP"
-                        android:progress="0"
-                        android:max="12"
-                        android:progressDrawable="@drawable/progressbarsp">
-                    </ProgressBar>
-                    <TextView
-                        android:id="@+id/progress_sp_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="#cc1d36ff"
-                        android:layout_alignBottom="@id/progressBarSP"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:text="">
-                    </TextView>
-                </RelativeLayout>
-                <RelativeLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="30"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible" >
-                    <ProgressBar
-                        style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/progressBarPT"
-                        android:progress="0"
-                        android:max="12"
-                        android:progressDrawable="@drawable/progressbarxp">
-                    </ProgressBar>
-                    <TextView
-                        android:id="@+id/progress_pt_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="#006329"
-                        android:layout_alignBottom="@id/progressBarPT"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:text="">
-                    </TextView>
-                </RelativeLayout>
-        </LinearLayout>
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/scrollViewCons"
-            android:layout_gravity="top">
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                xmlns:android="http://schemas.android.com/apk/res/android">
-
-                <LinearLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"></LinearLayout>
-
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="160dp"
-                    android:id="@+id/map"
-                    android:layout_weight="20"
-                    android:cropToPadding="false"
-                    android:baselineAlignBottom="false" />
-
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/linearLayout">
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:weightSum="1">
+                    android:baselineAligned="false">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_weight="30"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" >
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/player_name_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/player_lev_text"
-                            android:layout_width="wrap_content"
+                        <ProgressBar
+                            android:id="@+id/progressBarHP"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="">
-                        </TextView>
-
+                            android:max="12"
+                            android:progress="0"
+                            android:progressDrawable="@drawable/progressbarhp">
+                        </ProgressBar>
                         <TextView
-                            android:id="@+id/player_atten_text"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/progress_hp_text"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="#ccff0e15"
+                            android:layout_alignBottom="@id/progressBarHP"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
                             android:text="">
                         </TextView>
-
-                        <TextView
-                            android:layout_width="fill_parent"
+                    </RelativeLayout>
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="30"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" >
+                        <ProgressBar
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/chatMes"
-                            android:singleLine="false"
-                            android:gravity="right" />
-                    </LinearLayout>
+                            android:id="@+id/progressBarSP"
+                            android:progress="0"
+                            android:max="12"
+                            android:progressDrawable="@drawable/progressbarsp">
+                        </ProgressBar>
+                        <TextView
+                            android:id="@+id/progress_sp_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#cc1d36ff"
+                            android:layout_alignBottom="@id/progressBarSP"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:text="">
+                        </TextView>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="30"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" >
+                        <ProgressBar
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/progressBarPT"
+                            android:progress="0"
+                            android:max="12"
+                            android:progressDrawable="@drawable/progressbarxp">
+                        </ProgressBar>
+                        <TextView
+                            android:id="@+id/progress_pt_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#006329"
+                            android:layout_alignBottom="@id/progressBarPT"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:text="">
+                        </TextView>
+                    </RelativeLayout>
+            </LinearLayout>
 
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="vertical"
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <ScrollView
+                    android:id="@+id/scrollViewCons"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="20"
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/GameLinearLayout">
-                </LinearLayout>
+                    android:layout_gravity="top"
+                    android:layout_weight="85">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:orientation="vertical"></LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/map"
+                            android:layout_width="fill_parent"
+                            android:layout_height="160dp"
+                            android:layout_weight="20"
+                            android:baselineAlignBottom="false"
+                            android:cropToPadding="false" />
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <LinearLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/player_name_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"></TextView>
+
+                                <TextView
+                                    android:id="@+id/player_lev_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=""></TextView>
+
+                                <TextView
+                                    android:id="@+id/player_atten_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=""
+                                    android:textColor="#ccff0e15"></TextView>
+
+                                <TextView
+                                    android:id="@+id/chatMes"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="right"
+                                    android:singleLine="false"
+                                    android:onClick="onchatMesClick"
+                                    android:clickable="true"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/GameLinearLayout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dip"
+                            android:layout_marginTop="0dip"
+                            android:layout_marginRight="17dip"
+                            android:layout_marginBottom="0dip"
+                            android:layout_weight="20"
+                            android:orientation="vertical"></LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
             </LinearLayout>
-        </ScrollView>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:baselineAligned="false"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/linearLayout">
 
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/comBarButton0"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="25"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:contentDescription="ref"
+                android:src="@drawable/ref" />
+
+            <ImageButton
+                android:id="@+id/comBarButton1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="25"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:src="@drawable/e" />
+
+            <ImageButton
+                android:id="@+id/comBarButton2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="25"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:src="@drawable/n" />
+
+            <ImageButton
+                android:id="@+id/comBarButton3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="25"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:src="@drawable/s" />
+
+            <ImageButton
+                android:id="@+id/comBarButton4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="25"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:src="@drawable/w" />
+        </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:baselineAligned="false"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/linearLayout">
-
-        <ImageButton
-            android:id="@+id/comBarButton0"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:contentDescription="ref"
-            android:src="@drawable/ref" />
-
-        <ImageButton
-            android:id="@+id/comBarButton1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/e" />
-
-        <ImageButton
-            android:id="@+id/comBarButton2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/n" />
-
-        <ImageButton
-            android:id="@+id/comBarButton3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/s" />
-
-        <ImageButton
-            android:id="@+id/comBarButton4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/w" />
+        android:id="@+id/comsButtsLinearLayout"
+        android:layout_width="28dip"
+        android:layout_height="427dip"
+        android:layout_gravity="bottom|right"
+        android:layout_weight="15"
+        android:orientation="vertical">
     </LinearLayout>
-</RelativeLayout>
-
+</FrameLayout>

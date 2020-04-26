@@ -1,6 +1,7 @@
 package ru.jabbergames.sofswclient;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,8 +10,12 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerTabStrip;
+
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -115,6 +121,9 @@ public class GameFragment extends Fragment {
                 someEventListenerGm.addLog("e");
             }
         };
+
+
+
         btnCont.setOnClickListener(oclBtnCont);
         btnGoWest.setOnClickListener(oclBtnGoWest);
         btnGoNorth.setOnClickListener(oclBtnGoNorth);
@@ -122,6 +131,7 @@ public class GameFragment extends Fragment {
         btnGoEast.setOnClickListener(oclBtnGoEast);
         return v;
     }
+
     protected void AddGText(String txt,View v) {
             if (txt != "") {
                 if (txt.contains("бой. (")) {
@@ -142,6 +152,14 @@ public class GameFragment extends Fragment {
         vc=v;
         if (txt != "") {
             LinearLayout ll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            int marginInDp = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 3, getResources()
+                            .getDisplayMetrics());
+            lp.setMargins(marginInDp, marginInDp, marginInDp, marginInDp);
+            lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
             switch (kay)
             {
                 case "name":
@@ -179,15 +197,22 @@ public class GameFragment extends Fragment {
                     btnCont.setOnClickListener(oclBtnCmdS);
 
                     Button btnok = new Button(getActivity());
+                    btnok.setBackgroundColor(0x98838383);
+                    btnok.setLayoutParams(lp);
+                    btnok.setGravity(Gravity.START);
+                    btnok.setTransformationMethod(null);
                     btnok.setText(getString(R.string.OK));
                     btnok.setOnClickListener(oclBtnCmdS);
                     ll.addView(btnok);
                     break;
                 default:
                     Button btn = new Button(getActivity());
+                    btn.setBackgroundColor(0x98838383);
+                    btn.setLayoutParams(lp);
+                    btn.setGravity(Gravity.START);
+                    btn.setTransformationMethod(null);
                     btn.setText(txt);
                     btn.setTag(kay);
-                    btn.setTransformationMethod(null);
                     switch(kay){
                         case "SETTINGS swtheme":
                             if (txt.contains("Выбрана: Светлая тема")) {
@@ -482,6 +507,49 @@ public class GameFragment extends Fragment {
                 String prom = getString(R.string.ChatMessCounter) + String.valueOf(countNewMessage);
                 chatMes.setText(prom);
             } else chatMes.setText("");
+        }
+    }
+    protected void ClearButtc() {
+        if (getView() != null) {
+            LinearLayout ll = (LinearLayout) getView().findViewById(R.id.comsButtsLinearLayout);
+            ll.removeAllViewsInLayout();
+        }
+    }
+    protected void AddButC(String kay, String txt,View v) {
+        if(!Utils.flag) {
+            if (txt != "") {
+                Button btn = new Button(getActivity());
+                int sizeInDp = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 43, getResources()
+                                .getDisplayMetrics());
+                final int sdk = android.os.Build.VERSION.SDK_INT;
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.buttonroundbg));
+                } else {
+                    btn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.buttonroundbg));
+                }
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sizeInDp,sizeInDp);
+                lp.setMargins(0,6,0,6);
+                btn.setLayoutParams(lp);
+                btn.setGravity(Gravity.START);
+                btn.setText(txt.substring(0,2));
+                btn.setTag(kay);
+                // создаем обработчик нажатия
+                View.OnClickListener oclBtnCmd = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String com = (String) v.getTag();
+                        someEventListenerGm.SendCom(com);
+                        someEventListenerGm.addLog(com);
+                        someEventListenerGm.setCurrentIt(0);
+                    }
+                };
+
+                // присвоим обработчик кнопке
+                btn.setOnClickListener(oclBtnCmd);
+                LinearLayout ll = (LinearLayout) v.findViewById(R.id.comsButtsLinearLayout);
+                ll.addView(btn);
+            }
         }
     }
 }

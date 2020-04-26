@@ -5,14 +5,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="bottom">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollViewCons"
         android:layout_gravity="top">
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -34,20 +33,24 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/cmdSendButton"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
-                    android:layout_weight="75"
                     android:layout_height="wrap_content"
-                    android:text="@string/send"
-                    android:id="@+id/cmdSendButton" />
+                    android:layout_margin="3dip"
+                    android:layout_weight="75"
+                    android:background="#98838383"
+                    android:text="@string/send" />
 
                 <Button
+                    android:id="@+id/cmdClearButton"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
-                    android:layout_weight="25"
                     android:layout_height="wrap_content"
-                    android:text="@string/clr"
-                    android:id="@+id/cmdClearButton" />
+                    android:layout_margin="3dip"
+                    android:layout_weight="25"
+                    android:background="#98838383"
+                    android:text="@string/clr" />
             </LinearLayout>
 
         </LinearLayout>
