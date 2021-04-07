@@ -20,36 +20,40 @@
                 android:text="========="
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/cmdText"
-                android:singleLine="true"
-                android:hint="@string/cmdHint" />
+
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cmdText"
+                    android:singleLine="true"
+                    android:hint="@string/cmdHint"
+                    android:layout_weight="2" />
                 <Button
                     android:id="@+id/cmdSendButton"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="3dip"
-                    android:layout_weight="75"
-                    android:background="#98838383"
+                    android:layout_weight="7"
+                    android:background="#00FFFFFF"
+                    android:textSize="28dp"
                     android:text="@string/send" />
 
                 <Button
                     android:id="@+id/cmdClearButton"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="3dip"
-                    android:layout_weight="25"
-                    android:background="#98838383"
+                    android:textSize="18dp"
+                    android:layout_weight="7"
+                    android:background="#00FFFFFF"
                     android:text="@string/clr" />
             </LinearLayout>
 

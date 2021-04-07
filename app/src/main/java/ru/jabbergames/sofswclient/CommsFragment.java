@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 
 public class CommsFragment extends Fragment {
     public interface onSomeEventListenerCom {
@@ -40,6 +41,10 @@ public class CommsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_com_buts, container, false);
+
+        Switch sw = (Switch) v.findViewById(R.id.switchProtect);
+        sw.setChecked(Utils.ProtectTraffic);
+
         return v;
     }
     protected void ClearButtc() {
@@ -72,6 +77,7 @@ public class CommsFragment extends Fragment {
                 View.OnClickListener oclBtnCmd = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        GameFragment.HideGameView();
                         String com = (String) v.getTag();
                         someEventListener.SendCom(com);
                         someEventListener.addLog(com);

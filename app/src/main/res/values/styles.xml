@@ -4,13 +4,14 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/dark_color</item>
         <!--item name="android:buttonStyle">@drawable/sofbutton</item-->
         <!-- Customize your theme here. -->
     </style>
     <style name="AppThemeDark" parent="Theme.AppCompat.Light">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/background_d</item>
-        <item name="android:textColor">@color/dark_color</item>
+        <item name="android:textColor">@color/light_color</item>
         <item name="android:colorBackground">@color/dark_color</item>
         <!-- Customize your theme here. -->
     </style>

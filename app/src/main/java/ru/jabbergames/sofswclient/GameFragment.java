@@ -1,6 +1,8 @@
 package ru.jabbergames.sofswclient;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -26,19 +28,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
 public class GameFragment extends Fragment {
+
     public interface onSomeEventListenerGm {
         public void addLog(String s);
         public void SendCom(String comstr);
+        public void ClearComs();
         public int generateViewId();
         public void ChangeTitle(boolean light);
         public void setCurrentIt(int i);
+        public void getAuth();
     }
 
     public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -58,11 +64,20 @@ public class GameFragment extends Fragment {
     ImageButton btnGoNorth;
     ImageButton btnGoWest;
     ImageButton btnCont;
+    Button btnChoiceTG;
+    Button btnChoiceGoogle;
+    Button btnChoiceNone;
     TextView chatMes;
+    private static ScrollView scrollViewCons;
+    private static LinearLayout inProgressLinearLayout;
     View vc;
     int countNewMessage=0;
     private boolean frstTstShw=true;
     private boolean uot;
+    private String ClipText = "";
+    private static boolean bigMap = false;
+
+
     View.OnClickListener oclBtnCont = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -87,11 +102,20 @@ public class GameFragment extends Fragment {
         btnGoSouth = (ImageButton) v.findViewById(R.id.comBarButton3);
         btnGoEast = (ImageButton) v.findViewById(R.id.comBarButton4);
         chatMes=(TextView)v.findViewById(R.id.chatMes);
+        //кнопки первого запуска
+        btnChoiceTG = (Button)  v.findViewById(R.id.buttonChTG);
+        btnChoiceGoogle = (Button)  v.findViewById(R.id.buttonChGoogle);
+        btnChoiceNone = (Button)  v.findViewById(R.id.buttonChNone);
+
+        scrollViewCons = (ScrollView) v.findViewById(R.id.scrollViewCons);
+        inProgressLinearLayout = (LinearLayout) v.findViewById(R.id.inProgressLinearLayout);
+
         View.OnClickListener oclBtnGoWest = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 someEventListenerGm.SendCom("w");
                 someEventListenerGm.addLog("w");
+                HideGameView();
             }
         };
 
@@ -101,6 +125,7 @@ public class GameFragment extends Fragment {
             public void onClick(View v) {
                 someEventListenerGm.SendCom("n");
                 someEventListenerGm.addLog("n");
+                HideGameView();
             }
         };
 
@@ -110,6 +135,7 @@ public class GameFragment extends Fragment {
             public void onClick(View v) {
                 someEventListenerGm.SendCom("s");
                 someEventListenerGm.addLog("s");
+                HideGameView();
             }
         };
 
@@ -119,36 +145,127 @@ public class GameFragment extends Fragment {
             public void onClick(View v) {
                 someEventListenerGm.SendCom("e");
                 someEventListenerGm.addLog("e");
+                HideGameView();
             }
         };
 
+        // создаем обработчик нажатия
+        View.OnClickListener oclBtnChoiceTG = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HideGameView();
+                Utils.AuthMode = 1;
+                someEventListenerGm.ClearComs();
+                someEventListenerGm.getAuth();
+                someEventListenerGm.SendCom("nlinkToTg");
+                someEventListenerGm.addLog("nlinkToTg");
+            }
+        };
 
+        // создаем обработчик нажатия
+        View.OnClickListener oclChoiceGoogle = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HideGameView();
+                Utils.AuthMode = 2;
+                someEventListenerGm.ClearComs();
+                someEventListenerGm.getAuth();
+            }
+        };
+
+        // создаем обработчик нажатия
+        View.OnClickListener oclChoiceNone = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HideGameView();
+                Utils.AuthMode = 3;
+                someEventListenerGm.ClearComs();
+                someEventListenerGm.getAuth();
+                someEventListenerGm.SendCom("0");
+                someEventListenerGm.addLog("0");
+            }
+        };
 
         btnCont.setOnClickListener(oclBtnCont);
         btnGoWest.setOnClickListener(oclBtnGoWest);
         btnGoNorth.setOnClickListener(oclBtnGoNorth);
         btnGoSouth.setOnClickListener(oclBtnGoSouth);
         btnGoEast.setOnClickListener(oclBtnGoEast);
+
+        btnChoiceTG.setOnClickListener(oclBtnChoiceTG);
+        btnChoiceGoogle.setOnClickListener(oclChoiceGoogle);
+        btnChoiceNone.setOnClickListener(oclChoiceNone);
+
+        if(Utils.AuthMode == 0) GameFragment.ShowGameView();
+
         return v;
     }
 
-    protected void AddGText(String txt,View v) {
-            if (txt != "") {
-                if (txt.contains("бой. (")) {
-                    Utils.inFight = true;
-                } else {
-                    Utils.inFight = false;
-                }
-                LinearLayout ll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
-                TextView tv = new TextView(v.getContext());
-                tv.setText(txt);
-                ll.addView(tv);
-            }
+    protected static void HideGameView(){
+        scrollViewCons.setVisibility(View.INVISIBLE);
+        inProgressLinearLayout.setVisibility(View.VISIBLE);
     }
 
+    protected static void ShowGameView(){
+        scrollViewCons.setVisibility(View.VISIBLE);
+        inProgressLinearLayout.setVisibility(View.INVISIBLE);
+    }
+
+    public void ChangeMapSize(View v) {
+        HideGameView();
+        ImageView iv = (ImageView) v.findViewById(R.id.map);
+        int height = iv.getHeight();
+        if (bigMap) {
+            height = height / 2;
+            bigMap = false;
+        }else{
+            height = height * 2;
+            bigMap = true;
+        }
+        ViewGroup.LayoutParams par = iv.getLayoutParams();
+        par.height = height;
+        iv.setLayoutParams(par);
+
+        someEventListenerGm.SendCom("0");
+        someEventListenerGm.addLog("0");
+    }
+
+    protected void AddGText(String txt,View v) {
+        if (txt != "") {
+            if (txt.contains("бой. (")) {
+                Utils.inFight = true;
+            } else {
+                Utils.inFight = false;
+            }
+            LinearLayout ll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
+            TextView tv = new TextView(v.getContext());
+            tv.setText(txt);
+            ll.addView(tv);
+            ClipText = txt;
+
+            // создаем обработчик нажатия
+            View.OnClickListener oclText = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
 
-    protected void AddButG(String kay, String txt,View v,PagerTabStrip titlestrip) {
+                    ClipData clipData = ClipData.newPlainText("text", ClipText);
+                    ClipboardManager clipboard = (ClipboardManager) getContext()
+                            .getSystemService(Context.CLIPBOARD_SERVICE);
+                    clipboard.setPrimaryClip(clipData);
+
+                    Toast toastClip = Toast.makeText(getActivity().getApplicationContext(),
+                            "Текст скопирован", Toast.LENGTH_SHORT);
+                    toastClip.setGravity(Gravity.BOTTOM, -30, 0);
+                    toastClip.show();
+                }
+            };
+
+            ll.setOnClickListener(oclText);
+        }
+    }
+
+    protected void AddButG(String kay, String txt, View v, PagerTabStrip titlestrip) {
         vc=v;
         if (txt != "") {
             LinearLayout ll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
@@ -181,15 +298,16 @@ public class GameFragment extends Fragment {
                     View.OnClickListener oclBtnCmdS = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                EditText mCmdText = (EditText) vc.findViewById(STextEditID);
-                                String scom = mCmdText.getText().toString();
-                                if (scom == "") {
-                                    scom = "0";
-                                }
-                                someEventListenerGm.SendCom(scom);
-                                someEventListenerGm.addLog(scom);
-                                mCmdText.setText("");
-                                btnCont.setOnClickListener(oclBtnCont);
+                            EditText mCmdText = (EditText) vc.findViewById(STextEditID);
+                            String scom = mCmdText.getText().toString();
+                            if (scom == "") {
+                                scom = "0";
+                            }
+                            someEventListenerGm.SendCom(scom);
+                            someEventListenerGm.addLog(scom);
+                            HideGameView();
+                            mCmdText.setText("");
+                            btnCont.setOnClickListener(oclBtnCont);
                         }
                         ;
                     };
@@ -216,19 +334,20 @@ public class GameFragment extends Fragment {
                     switch(kay){
                         case "SETTINGS swtheme":
                             if (txt.contains("Выбрана: Светлая тема")) {
-                            // создаем обработчик нажатия
-                            View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Utils.changeToTheme(getActivity(), Utils.THEME_DARK);
-                                    someEventListenerGm.ChangeTitle(false);
-                                    String com = (String) v.getTag();
-                                    someEventListenerGm.SendCom(com);
-                                    someEventListenerGm.addLog(com);
-                                    //tabHost.setCurrentTabByTag(tabTags[0]);
-                                }
-                            };
-                            btn.setOnClickListener(oclBtnCmdd);
+                                // создаем обработчик нажатия
+                                View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Utils.changeToTheme(getActivity(), Utils.THEME_DARK);
+                                        someEventListenerGm.ChangeTitle(false);
+                                        String com = (String) v.getTag();
+                                        someEventListenerGm.SendCom(com);
+                                        someEventListenerGm.addLog(com);
+                                        //tabHost.setCurrentTabByTag(tabTags[0]);
+                                        HideGameView();
+                                    }
+                                };
+                                btn.setOnClickListener(oclBtnCmdd);
                             } else{
                                 // создаем обработчик нажатия
                                 View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
@@ -240,9 +359,10 @@ public class GameFragment extends Fragment {
                                         someEventListenerGm.SendCom(com);
                                         someEventListenerGm.addLog(com);
                                         //tabHost.setCurrentTabByTag(tabTags[0]);
+                                        HideGameView();
                                     }
                                 };
-                            btn.setOnClickListener(oclBtnCmdd);
+                                btn.setOnClickListener(oclBtnCmdd);
                             }
                             break;
                         case "SETTINGS swpush_rdy":
@@ -257,9 +377,10 @@ public class GameFragment extends Fragment {
                                         someEventListenerGm.SendCom(com);
                                         someEventListenerGm.addLog(com);
                                         //tabHost.setCurrentTabByTag(tabTags[0]);
+                                        HideGameView();
                                     }
                                 };
-                            btn.setOnClickListener(oclBtnCmdd);
+                                btn.setOnClickListener(oclBtnCmdd);
                             }
                             else{
                                 // создаем обработчик нажатия
@@ -271,6 +392,7 @@ public class GameFragment extends Fragment {
                                         someEventListenerGm.SendCom(com);
                                         someEventListenerGm.addLog(com);
                                         //tabHost.setCurrentTabByTag(tabTags[0]);
+                                        HideGameView();
                                     }
                                 };
                                 btn.setOnClickListener(oclBtnCmdd);
@@ -288,6 +410,7 @@ public class GameFragment extends Fragment {
                                         someEventListenerGm.SendCom(com);
                                         someEventListenerGm.addLog(com);
                                         //tabHost.setCurrentTabByTag(tabTags[0]);
+                                        HideGameView();
                                     }
                                 };
                                 btn.setOnClickListener(oclBtnCmdd);
@@ -302,6 +425,7 @@ public class GameFragment extends Fragment {
                                         someEventListenerGm.SendCom(com);
                                         someEventListenerGm.addLog(com);
                                         //tabHost.setCurrentTabByTag(tabTags[0]);
+                                        HideGameView();
                                     }
                                 };
                                 btn.setOnClickListener(oclBtnCmdd);
@@ -315,6 +439,7 @@ public class GameFragment extends Fragment {
                                     String com = (String) v.getTag();
                                     someEventListenerGm.SendCom(com);
                                     someEventListenerGm.addLog(com);
+                                    HideGameView();
                                 }
                             };
                             // присвоим обработчик кнопке
@@ -329,6 +454,7 @@ public class GameFragment extends Fragment {
                                         String com = (String) v.getTag();
                                         someEventListenerGm.SendCom(com);
                                         someEventListenerGm.addLog(com);
+                                        HideGameView();
                                     }
                                 };
                                 btnCont = (ImageButton) v.findViewById(R.id.comBarButton0);
@@ -338,18 +464,24 @@ public class GameFragment extends Fragment {
                                 btnCont.setOnClickListener(oclBtnCont);
                             }
                             break;
-                        }
-                        ll.addView(btn);
-                        break;
-                }
+                    }
+                    ll.addView(btn);
+                    break;
+            }
         }
     }
 
     protected void SetPname(String nm) {
         if (getView() != null) {
-        TextView tv = (TextView) getView().findViewById(R.id.player_name_text);
-        tv.setText(nm);
-    }}
+            TextView tv = (TextView) getView().findViewById(R.id.player_name_text);
+            tv.setText(nm);
+        }
+    }
+
+    protected void SetEmoji(String em) {
+        Utils.emoji = em;
+    }
+
 
     protected void SetPlev(String de, String lv) {
         if (getView() != null) {
@@ -396,8 +528,8 @@ public class GameFragment extends Fragment {
                 shpt = pt.substring(0, pt.length() - 3) + "k";
             }
             TextView tv = (TextView) getView().findViewById(R.id.progress_pt_text);
-            Integer i = Integer.parseInt(ptmax) - Integer.parseInt(pt);
-            tv.setText(ptdes + shpt + "/" + i.toString());  // Convert.ToString(Convert.ToInt32(ptmax) - Convert.ToInt32(pt));
+            int i = Integer.parseInt(ptmax) - Integer.parseInt(pt);
+            tv.setText(ptdes + shpt + "/" + Integer.toString(i));  // Convert.ToString(Convert.ToInt32(ptmax) - Convert.ToInt32(pt));
             ProgressBar pb = (ProgressBar) getView().findViewById(R.id.progressBarPT);
             pb.setMax(Integer.parseInt(ptmax));
             pb.setProgress(Integer.parseInt(pt));
@@ -415,77 +547,84 @@ public class GameFragment extends Fragment {
         }
     }
     protected void UpdateMap(String x, String y, String code,View v) {
-            ImageView iv = (ImageView) v.findViewById(R.id.map);
-            Bitmap prom;
-            Bitmap tempBitmap = Bitmap.createBitmap(iv.getWidth(), iv.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas tempCanvas = new Canvas(tempBitmap);
-            Bitmap image;
-            if (Utils.isLight) {
-                image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
-                prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
-                tempCanvas.drawBitmap(prom, 0, 0, null);
-            } else {
-                image = BitmapFactory.decodeResource(getResources(), R.drawable.background_d);
-                prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
-                tempCanvas.drawBitmap(prom, 0, 0, null);
-            }
+        ImageView iv = (ImageView) v.findViewById(R.id.map);
+        Bitmap prom;
+        Bitmap tempBitmap = Bitmap.createBitmap(iv.getWidth(), iv.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        Bitmap image;
+        if (Utils.isLight) {
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
+            prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
+            tempCanvas.drawBitmap(prom, 0, 0, null);
+        } else {
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.background_d);
+            prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
+            tempCanvas.drawBitmap(prom, 0, 0, null);
+        }
 /*        BitmapFactory.Options options = new BitmapFactory.Options();
         //options.inInputShareable = true;
         options.inSampleSize = 0;
         options.inScaled = false;
         options.inPreferQualityOverSpeed = false;*/
-            Paint transparentpaint = new Paint();
-            transparentpaint.setAlpha(200); // 0 - 255
+        Paint transparentpaint = new Paint();
+        transparentpaint.setAlpha(200); // 0 - 255
 
-            if (Utils.mapC.indexOf(x + ":" + y) < 0) {
-                Utils.mapC.add(x + ":" + y);
-                Utils.mapP.add(code);
-            }
+        if (Utils.mapC.indexOf(x + ":" + y) < 0) {
+            Utils.mapC.add(x + ":" + y);
+            Utils.mapP.add(code);
+        }
 
-            //16x16
-            int cx = Integer.parseInt(x);
-            int cy = Integer.parseInt(y);
-            String tx;
-            String ty;
-            image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
-            int rz = image.getHeight();
-            int hmc = (int) (iv.getWidth() / 2) - 1;
-            int vmc = (int) (iv.getHeight() / 2);
-            int hdc = (int) (hmc / rz);
-            int vdc = (int) (vmc / rz);
-            for (int i = (-1 * hdc - 1); i <= hdc; i++) {
-                for (int j = (-1 * vdc); j <= vdc + 1; j++) {
-                    tx = Integer.toString(cx + i);
-                    ty = Integer.toString(cy + j);
-                    int pt = Utils.mapC.indexOf(tx + ":" + ty);
-                    if (pt > -1) {
-                        Resources r = getResources();
-                        String gogo;
-                        if (Utils.isLight) {
-                            gogo = "_l";
-                        } else {
-                            gogo = "_d";
-                        }
-                        try {
-                            Class res = R.drawable.class;
-                            Field field = res.getField(Utils.mapP.get(pt) + gogo);
-                            int drawableId = field.getInt(null);
-                            image = BitmapFactory.decodeResource(r, drawableId);
-                            //image.setPremultiplied(true);
-                            //image.setHasAlpha(true);
-                            tempCanvas.drawBitmap(image, hmc + i * rz, vmc - j * rz, transparentpaint);
-                        } catch (Exception e) {
-
-                        }
-                        //int drawableId = r.getIdentifier(mapP.get(pt).toString()+"_l", "drawable", "ru.jabbergames.sofswclient");
+        //16x16
+        int cx = Integer.parseInt(x);
+        int cy = Integer.parseInt(y);
+        String tx;
+        String ty;
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
+        int rz = image.getHeight();
+        int hmc = (int) (iv.getWidth() / 2) - 1;
+        int vmc = (int) (iv.getHeight() / 2);
+        int hdc = (int) (hmc / rz);
+        int vdc = (int) (vmc / rz);
+        for (int i = (-1 * hdc - 1); i <= hdc; i++) {
+            for (int j = (-1 * vdc); j <= vdc + 1; j++) {
+                tx = Integer.toString(cx + i);
+                ty = Integer.toString(cy + j);
+                int pt = Utils.mapC.indexOf(tx + ":" + ty);
+                if (pt > -1) {
+                    Resources r = getResources();
+                    String gogo;
+                    if (Utils.isLight) {
+                        gogo = "_l";
+                    } else {
+                        gogo = "_d";
                     }
+                    try {
+                        Class res = R.drawable.class;
+                        Field field = res.getField(Utils.mapP.get(pt) + gogo);
+                        int drawableId = field.getInt(null);
+                        image = BitmapFactory.decodeResource(r, drawableId);
+                        //image.setPremultiplied(true);
+                        //image.setHasAlpha(true);
+                        tempCanvas.drawBitmap(image, hmc + i * rz, vmc - j * rz, transparentpaint);
+                    } catch (Exception e) {
+
+                    }
+                    //int drawableId = r.getIdentifier(mapP.get(pt).toString()+"_l", "drawable", "ru.jabbergames.sofswclient");
                 }
             }
-            image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
-            tempCanvas.drawBitmap(image, hmc, vmc, transparentpaint);
-            iv.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
-
         }
+        //image = BitmapFactory.decodeResource(getResources(), R.drawable.s01_l);
+        //tempCanvas.drawBitmap(image, hmc, vmc, transparentpaint);
+
+        Paint p = new Paint();
+        p.setTextSize(46.0f);
+        tempCanvas.drawText(Utils.emoji, hmc - 6 , vmc + 32, p);
+
+
+        iv.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+
+    }
+
     protected void refreshButtonPressed(){
         if(frstTstShw) {
             frstTstShw=false;
@@ -496,6 +635,7 @@ public class GameFragment extends Fragment {
         }
         someEventListenerGm.SendCom("0");
         someEventListenerGm.addLog("0");
+        HideGameView();
     }
     protected void setCountNewMessage(int position) {
         if (position == 2) {
@@ -542,6 +682,7 @@ public class GameFragment extends Fragment {
                         someEventListenerGm.SendCom(com);
                         someEventListenerGm.addLog(com);
                         someEventListenerGm.setCurrentIt(0);
+                        HideGameView();
                     }
                 };
 

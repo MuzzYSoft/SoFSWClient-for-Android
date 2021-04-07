@@ -6,3 +6,10 @@
 /build
 /captures
 /jabbergames.jks
+app/app.iml
+.idea/modules/app/SoFSWClient-for-Android.app.iml
+.idea/modules.xml
+.idea/misc.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/caches/build_file_checksums.ser

@@ -79,9 +79,14 @@ public class CmdFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable arg0) {
 
-                ScrollView scrollView1 = (ScrollView) vv.findViewById(R.id.scrollViewCons);
-                scrollView1.fullScroll(ScrollView.FOCUS_DOWN);
-                // you can add a toast or whatever you want here
+                final ScrollView sv = (ScrollView) vv.findViewById(R.id.scrollViewCons);
+                //sv.scrollTo(0, sv.getBottom());
+                sv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
             }
 
             @Override
@@ -93,7 +98,14 @@ public class CmdFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2,
                                       int arg3) {
-                //override stub
+                final ScrollView sv = (ScrollView) vv.findViewById(R.id.scrollViewCons);
+                //sv.scrollTo(0, sv.getBottom());
+                sv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
             }
 
         });
@@ -107,9 +119,11 @@ public class CmdFragment extends Fragment {
             if (mCmdText != null) {
                 mCmdText.append("\n\r" + addstr);
                 countLogMes++;
-                if(countLogMes>300){
-                    mCmdText.setText("");
-                    countLogMes=0;
+                if(countLogMes>200){
+                    String s = mCmdText.getText().toString();
+                    s = s.substring(s.length()/2);
+                    mCmdText.setText(s);
+                    countLogMes=100;
                 }
             }
         }

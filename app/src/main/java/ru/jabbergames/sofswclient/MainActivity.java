@@ -1,6 +1,7 @@
 package ru.jabbergames.sofswclient;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,9 +14,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.PagerTabStrip;
 
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -46,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -61,7 +66,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
 
     private static final int RC_SIGN_IN = 0;
     private String deviceId;
-    private String ClVer = "a.1.0.7.7";
+    private String ClVer = "a.1.0.8.7";
     private int STextEditID;
     private Timer mTimer;
     private MyTimerTask mMyTimerTask;
@@ -78,28 +83,34 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
     CommsFragment commsFr;
     CmdFragment cmdFr;
     MyPageAdapter pageAdapter;
+    SharedPreferences settings;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_main);
-        if(Utils.flag){
+
+        settings = getSharedPreferences("sofclient", MODE_PRIVATE);
+        Utils.devId = settings.getString("deviceId","unknown");
+        Utils.AuthMode = settings.getInt("AuthMode", 0);
+        Utils.ProtectTraffic = settings.getBoolean("ProtectTraffic", true);
+
+        // Первый запуск
+        if(Utils.devId == "unknown"){
+            Utils.devId = UUID.randomUUID().toString();
+
+            SharedPreferences.Editor prefEditor = settings.edit();
+            prefEditor.putString("deviceId", Utils.devId);
+            prefEditor.apply();
+        }
+
+        if(Utils.AuthMode != 0) setDeviceId(Utils.devId);
+
+        if(Utils.flag & Utils.AuthMode != 0){
             SendCom("getcomms");
             SendCom("getmappoints");
         }
-
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        // Build a GoogleSignInClient with the options specified by gso.
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-
-        //setDeviceId("test@test.ru");
 
         List<Fragment> fragments = getFragments();
         gmFr=(GameFragment)fragments.get(0);
@@ -128,12 +139,61 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         mTimer = new Timer();
         mMyTimerTask = new MyTimerTask();
 
-        mTimer.schedule(mMyTimerTask, 1100, 1100);
-        SendCom("0");
+        mTimer.schedule(mMyTimerTask, 788, 788);
+
+        if(Utils.AuthMode != 0) SendCom("0");
+    }
+
+    public void getAuth(){
+        switch (Utils.AuthMode) {
+            case 0:
+                //не выбрана авторизация
+                break;
+            case 1:
+                //телеграм
+            case 3:
+                // без авторизации
+                setDeviceId(Utils.devId);
+                SharedPreferences.Editor prefEditor = settings.edit();
+                prefEditor.putString("deviceId", Utils.devId);
+                prefEditor.apply();
+                break;
+            case 2:
+                //гугл авторизация
+                // Configure sign-in to request the user's ID, email address, and basic
+                // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .build();
+                // Build a GoogleSignInClient with the options specified by gso.
+                GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+
+                break;
+        }
+        settings = getSharedPreferences("sofclient", MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putInt("AuthMode", Utils.AuthMode);
+        prefEditor.apply();
     }
 
     public void onchatMesClick(View view) {
         setCurrentIt(2);
+    }
+
+    public void onMapClick(View view) {
+        gmFr.ChangeMapSize(view);
+    }
+
+    public void onProtSwClick(View view) {
+        Switch sw = (Switch) view.findViewById(R.id.switchProtect);
+        Utils.ProtectTraffic = sw.isChecked();
+        settings = getSharedPreferences("sofclient", MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("ProtectTraffic", Utils.ProtectTraffic);
+        prefEditor.apply();
     }
 
     @Override
@@ -155,11 +215,27 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
 
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
-            setDeviceId(account.getEmail()+"|"+account.getId());
+
+            boolean newAuth = !Utils.devId.equals(account.getEmail() + "|" + account.getId());
+
+            Utils.devId = account.getEmail()+"|"+account.getId();
+            setDeviceId(Utils.devId);
+            SharedPreferences.Editor prefEditor = settings.edit();
+            prefEditor.putString("deviceId", Utils.devId);
+            prefEditor.apply();
+            // перегрузить настройки с сервера
+            if(newAuth)  SendCom("start");
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             cmdFr.addLog("signInResult:failed code=" + e.getStatusCode() + " " + e.getMessage());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setCurrentIt(3);
+                }
+            });
             //updateUI(null);
         }
     }
@@ -326,12 +402,16 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                         //cont = true;
                                                         break;
                                                     case "point":
-                                                        gmFr.UpdateMap(melement.getAttribute("x"), melement.getAttribute("y"), melement.getAttribute("code"),gmFr.getView());
+                                                        Utils.curX = melement.getAttribute("x");
+                                                        Utils.curY = melement.getAttribute("y");
+                                                        Utils.curCode = melement.getAttribute("code");
+                                                        gmFr.UpdateMap(Utils.curX, Utils.curY , Utils.curCode, gmFr.getView());
                                                         break;
                                                 }
                                             } catch (Exception e) {
                                                 // TODO: handle exception
                                             }
+                                            GameFragment.ShowGameView();
                                         }
                                     case "chat":
                                         //cont = true;
@@ -353,7 +433,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                         to = gelement.getTextContent();
                                                         break;
                                                     case "mtext":
-                                                        mtext = SpecialXmlEscapeEnc(gelement.getTextContent());
+                                                        mtext = gelement.getTextContent();
                                                         break;
                                                     case "dtime":
                                                         dtime = gelement.getTextContent();
@@ -362,7 +442,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                     case "mid":
                                                         String ts = gelement.getTextContent();
                                                         tid = Integer.parseInt(ts);
-                                                        //if (chatminid > tid) chatminid = tid;
+                                                        //Utils.lastMessId = Utils.lastMessId < tid ? tid:Utils.lastMessId;
                                                         break;
                                                     default:
                                                         break;
@@ -538,7 +618,6 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                             Utils.isLight=true;
                                                             break;
                                                     }
-
                                                     break;
                                                 case "push_rdy":
                                                     switch (setmelement.getTextContent()) {
@@ -583,7 +662,6 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                             }
                                                             break;
                                                     }
-
                                                     break;
                                             }
 
@@ -617,6 +695,9 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                             case "atten":
                                                 gmFr.SetAtten(gelement.getAttribute("on"));
                                                 break;
+                                            case "emoji":
+                                                gmFr.SetEmoji(gelement.getTextContent());
+                                                break;
                                         }
                                     } catch (Exception e) {
                                         // TODO: handle exception
@@ -645,70 +726,19 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
 
 
     public void SendComN(String cstr) {
-        if (cstr != "") {
+        if (!cstr.equals("")) {
             //addLog("<---");
             new LongOperation() {
                 @Override
                 public void onPostExecute(String result) {
                     RespPars(result);
                 }
-            }.execute(SpecialXmlEscape(cstr));
+            }.execute(cstr);
 
         } else {
             cmdFr.addLog("---");
         }
 
-    }
-
-    public String SpecialXmlEscapeEnc(String input)
-    {
-        String strXmlText = input;
-
-        int p = strXmlText.indexOf(":amp:#");
-        while (p > -1) {
-            try
-            {
-                int e = strXmlText.indexOf(";", p);
-                String st = strXmlText.substring(p + 6, e);
-                int c = Integer.parseInt(st);
-                String pat = strXmlText.substring(p, e + 1);
-                char ch = (char)c;
-                String rep = String.valueOf(ch);
-                strXmlText = strXmlText.replace(pat, rep);
-            }
-            catch (Exception ex)
-            {
-                int e = strXmlText.indexOf(";", p);
-                String st = strXmlText.substring(p + 6, e);
-                strXmlText = strXmlText.replace(":amp:#" + st + ";", "?");
-            }
-            p = strXmlText.indexOf(":amp:#");
-        }
-
-        return strXmlText;
-    }
-
-    public String SpecialXmlEscape(String input)
-    {
-        String strXmlText = "";
-
-        /*if (string.IsNullOrEmpty(input))
-            return input;*/
-
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < input.length(); ++i)
-        {
-            int c = (int)input.charAt(i);
-            if ((c > 47 && c < 126) || (c > 31 && c < 38) || (c > 1024 && c < 1279) || (c==42)) sb.append((char)input.charAt(i)); else sb.append(":amp:#" + c + ";");
-        }
-
-        strXmlText = sb.toString();
-        //sb.clear();
-        sb = null;
-
-        return strXmlText;
     }
 
 
@@ -717,15 +747,19 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         @Override
         protected String doInBackground(String... params) {
             String str="error";
+            String uri = Utils.ProtectTraffic ? "https://sofsw.jabbergames.ru/g.php":"http://sofsw.jabbergames.ru/g.php";
+
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("https://sofsw.jabbergames.ru/g.php");
+            HttpPost httppost = new HttpPost(uri);
 
             try
             {
+                String lc =  String.valueOf(Utils.lastMessId);
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                 nameValuePairs.add(new BasicNameValuePair("i", getDeviceId()));
                 nameValuePairs.add(new BasicNameValuePair("j", params[0]));
                 nameValuePairs.add(new BasicNameValuePair("v", ClVer));
+                nameValuePairs.add(new BasicNameValuePair("lc", lc));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8));
                 HttpResponse response = httpclient.execute(httppost);
 
@@ -734,13 +768,28 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
             }
             catch (ClientProtocolException e)
             {
-                e.printStackTrace();
-                cmdFr.addLog("Подключение невозможно. Проверьте, пожалуйста, соединение интернет.");
+                //e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cmdFr.addLog("Подключение невозможно. Проверьте, пожалуйста, соединение интернет. Отправьте 0 после восстановления соединения.");
+                        setCurrentIt(3);
+                    }
+                });
+
             }
             catch (IOException e)
             {
-                e.printStackTrace();
-                cmdFr.addLog("Ошибка. Проверьте, пожалуйста, соединение интернет.");
+                //e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cmdFr.addLog("Ошибка. Проверьте, пожалуйста, соединение интернет. Отправьте 0 после восстановления соединения.");
+                        setCurrentIt(3);
+                    }
+                });
+
+
             }
 
             return str;
@@ -781,6 +830,11 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
         fList.add(ChatFragment.newInstance("Чат"));
         fList.add(CmdFragment.newInstance("Консоль"));
         return fList;
+    }
+
+    public void ClearComs()
+    {
+        ReqGm.clear();
     }
 
     private class MyPageAdapter extends FragmentPagerAdapter {

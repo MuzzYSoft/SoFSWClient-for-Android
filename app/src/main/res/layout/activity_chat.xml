@@ -1,8 +1,9 @@
-<LinearLayout
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -52,10 +53,9 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:gravity="bottom"
         android:id="@+id/chatLayout">
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/scrollViewChat"
@@ -78,20 +78,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/abc_button_padding_horizontal_material" />
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/chatText"
-                    android:singleLine="false"
-                    android:hint="@string/chatHint"
-                    android:inputType="textMultiLine" />
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/send"
-                    android:id="@+id/chatSendButton" />
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/chatText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/chatHint"
+                        android:inputType="textMultiLine"
+                        android:singleLine="false"
+                        android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/chatSendButton"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"
+                        android:background="#00FFFFFF"
+                        android:text="@string/send"
+                        android:textSize="28dp" />
+                </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ComButtScroll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,12 +16,12 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center_vertical"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="соглашение, правила, сайт игры"
+            android:text="@string/rules"
             android:textAlignment="center"
             android:gravity="center_horizontal" />
 
@@ -35,6 +36,18 @@
             android:autoLink="web"
             android:background="#98838383"
             android:gravity="left|center_vertical"
-            android:text=" 🌐 http://jabbergames.ru/rules" />
+            android:text=" 🌐 https://jabbergames.ru/rules"
+            android:layout_marginStart="0dip"
+            tools:ignore="RtlHardcoded" />
+
+        <Switch
+            android:id="@+id/switchProtect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:checked="true"
+            android:onClick="onProtSwClick"
+            android:text="@string/protectText" />
+
     </LinearLayout>
 </ScrollView>

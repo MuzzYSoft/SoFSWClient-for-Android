@@ -14,11 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -119,6 +126,7 @@ public class ChatFragment extends Fragment {
                     someEventListener.addLog(com);
                     LinearLayout ll = (LinearLayout) vc.findViewById(R.id.chatContent);
                     ll.removeAllViewsInLayout();
+                    chatminid = 2147483647;
                 }
             };
 
@@ -128,7 +136,9 @@ public class ChatFragment extends Fragment {
             ll.addView(btn);
     }
 
-    protected void AddToChat(String from, String to, String message, String dtime, boolean priv, boolean totop, int tid, View v) {
+    protected void AddToChat(String from, String to, String message, String dtime, boolean priv, boolean totop, int tid, View v) throws IOException {
+
+            String imageUrl;
 
             LinearLayout ll = (LinearLayout) v.findViewById(R.id.chatContent);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -141,13 +151,29 @@ public class ChatFragment extends Fragment {
             lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
 
             if (chatminid > tid) chatminid = tid;
+            Utils.lastMessId = Utils.lastMessId < tid ? tid:Utils.lastMessId;
+
+            // вставка картинки
+            int start = message.indexOf("{img=");
+            if(start >= 0){
+                int end = message.indexOf("}");
+                imageUrl = message.substring(start + 5, end);
+
+                ImageView iv = (ImageView) new ImageView(getActivity());
+                Picasso.get().load(imageUrl).into(iv);
+
+                iv.setLayoutParams(lp);
+                ll.addView(iv);
+
+                message = message.substring(0, start==0?0:start - 1) + message.substring(end + 1);
+            }
 
             //кнопка загрузки истории
             if (ll.getChildCount() > 0) {
                 Button ghbtn = (Button) ll.getChildAt(0);
                 if (!ghbtn.getTag().toString().equals("ghbtn")) {
                     ghbtn = new Button(getActivity());
-                    ghbtn.setBackgroundColor(0x98838383);
+                    ghbtn.setBackgroundColor(0x3E838383);
                     ghbtn.setLayoutParams(lp);
                     ghbtn.setGravity(Gravity.START);
                     ghbtn.setTransformationMethod(null);
@@ -174,7 +200,7 @@ public class ChatFragment extends Fragment {
 
             }
 
-
+            // местное время
             String shou = "";
             String smin = "";
             if (!dtime.equals("none")) {
@@ -203,11 +229,12 @@ public class ChatFragment extends Fragment {
             }
 
             Button btn = new Button(getActivity());
-            btn.setBackgroundColor(0x98838383);
+            btn.setBackgroundColor(0x3E838383);
             btn.setLayoutParams(lp);
             btn.setGravity(Gravity.START);
             btn.setTransformationMethod(null);
             someEventListener.isChatFr();
+
             if (priv) {
                 if (Utils.toastPrMesIsAcc) {
                     String ffrom;
@@ -226,6 +253,7 @@ public class ChatFragment extends Fragment {
             btn.setGravity(Gravity.START);
             btn.setTransformationMethod(null);
             btn.setTag(from);
+
             // создаем обработчик нажатия
             View.OnClickListener oclBtnCmdddd = new View.OnClickListener() {
 
@@ -244,8 +272,13 @@ public class ChatFragment extends Fragment {
             } else {
                 ll.addView(btn);
                 if (!Utils.seeHist) {
-                    ScrollView scrollView1 = (ScrollView) v.findViewById(R.id.scrollViewChat);
-                    scrollView1.fullScroll(ScrollView.FOCUS_DOWN);
+                    final ScrollView sv = (ScrollView) v.findViewById(R.id.scrollViewChat);
+                    sv.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            sv.fullScroll(View.FOCUS_DOWN);
+                        }
+                    });
                 }
             }
     }
@@ -281,6 +314,7 @@ public class ChatFragment extends Fragment {
                             nk = "!private " + nk + " ";
                             return true;
                         case R.id.menu3:
+                            GameFragment.HideGameView();
                             someEventListener.SendCom("05 " + nk);
                             someEventListener.addLog("05 " + nk);
                             nk = "";
