@@ -111,7 +111,6 @@
                     android:layout_gravity="top"
                     android:layout_weight="85"
                     tools:ignore="UselessParent"
-                    android:visibility="invisible"
                     android:animateLayoutChanges="true">
 
                     <LinearLayout
@@ -180,7 +179,9 @@
                             android:layout_marginRight="17dip"
                             android:layout_marginBottom="48dip"
                             android:layout_weight="20"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="invisible"
+                            android:animateLayoutChanges="true">
                             <Button
                                 android:id="@+id/buttonChTG"
                                 android:layout_width="match_parent"
@@ -287,20 +288,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/comsButtsLinearLayout"
-        android:layout_width="33dip"
-        android:layout_height="457dip"
-        android:layout_gravity="bottom|right"
-        android:layout_weight="15"
-        android:orientation="vertical" />
-
-    <LinearLayout
         android:id="@+id/inProgressLinearLayout"
         android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center"
-        android:layout_weight="15"
         android:orientation="vertical">
         <ProgressBar
             style="@android:style/Widget.ProgressBar.Inverse"
@@ -309,4 +301,12 @@
             android:background="@android:color/transparent">
         </ProgressBar>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/comsButtsLinearLayout"
+        android:layout_width="33dip"
+        android:layout_height="457dip"
+        android:layout_gravity="bottom|right"
+        android:orientation="vertical" />
+
 </FrameLayout>

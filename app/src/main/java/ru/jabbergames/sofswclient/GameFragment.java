@@ -70,6 +70,8 @@ public class GameFragment extends Fragment {
     TextView chatMes;
     private static ScrollView scrollViewCons;
     private static LinearLayout inProgressLinearLayout;
+    private static LinearLayout gll;
+
     View vc;
     int countNewMessage=0;
     private boolean frstTstShw=true;
@@ -109,6 +111,7 @@ public class GameFragment extends Fragment {
 
         scrollViewCons = (ScrollView) v.findViewById(R.id.scrollViewCons);
         inProgressLinearLayout = (LinearLayout) v.findViewById(R.id.inProgressLinearLayout);
+        gll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
 
         View.OnClickListener oclBtnGoWest = new View.OnClickListener() {
             @Override
@@ -202,12 +205,14 @@ public class GameFragment extends Fragment {
     }
 
     protected static void HideGameView(){
-        scrollViewCons.setVisibility(View.INVISIBLE);
+        gll.setVisibility(View.INVISIBLE);
+        //scrollViewCons.setVisibility(View.INVISIBLE);
         inProgressLinearLayout.setVisibility(View.VISIBLE);
     }
 
     protected static void ShowGameView(){
-        scrollViewCons.setVisibility(View.VISIBLE);
+        gll.setVisibility(View.VISIBLE);
+        //scrollViewCons.setVisibility(View.VISIBLE);
         inProgressLinearLayout.setVisibility(View.INVISIBLE);
     }
 
@@ -237,10 +242,10 @@ public class GameFragment extends Fragment {
             } else {
                 Utils.inFight = false;
             }
-            LinearLayout ll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
+
             TextView tv = new TextView(v.getContext());
             tv.setText(txt);
-            ll.addView(tv);
+            gll.addView(tv);
             ClipText = txt;
 
             // создаем обработчик нажатия
@@ -261,14 +266,14 @@ public class GameFragment extends Fragment {
                 }
             };
 
-            ll.setOnClickListener(oclText);
+            gll.setOnClickListener(oclText);
         }
     }
 
     protected void AddButG(String kay, String txt, View v, PagerTabStrip titlestrip) {
         vc=v;
         if (txt != "") {
-            LinearLayout ll = (LinearLayout) v.findViewById(R.id.GameLinearLayout);
+
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -292,7 +297,7 @@ public class GameFragment extends Fragment {
                         STextEditID = View.generateViewId();
                     }
                     et.setId(STextEditID);
-                    ll.addView(et);
+                    gll.addView(et);
 
                     // создаем обработчик нажатия
                     View.OnClickListener oclBtnCmdS = new View.OnClickListener() {
@@ -321,7 +326,7 @@ public class GameFragment extends Fragment {
                     btnok.setTransformationMethod(null);
                     btnok.setText(getString(R.string.OK));
                     btnok.setOnClickListener(oclBtnCmdS);
-                    ll.addView(btnok);
+                    gll.addView(btnok);
                     break;
                 default:
                     Button btn = new Button(getActivity());
@@ -465,7 +470,7 @@ public class GameFragment extends Fragment {
                             }
                             break;
                     }
-                    ll.addView(btn);
+                    gll.addView(btn);
                     break;
             }
         }
@@ -617,8 +622,8 @@ public class GameFragment extends Fragment {
         //tempCanvas.drawBitmap(image, hmc, vmc, transparentpaint);
 
         Paint p = new Paint();
-        p.setTextSize(46.0f);
-        tempCanvas.drawText(Utils.emoji, hmc - 6 , vmc + 32, p);
+        p.setTextSize(40);
+        tempCanvas.drawText(Utils.emoji, hmc - 4 , vmc + 28, p);
 
 
         iv.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
