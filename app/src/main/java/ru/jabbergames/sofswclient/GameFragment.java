@@ -557,12 +557,11 @@ public class GameFragment extends Fragment {
         Bitmap tempBitmap = Bitmap.createBitmap(iv.getWidth(), iv.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas tempCanvas = new Canvas(tempBitmap);
         Bitmap image;
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.bg_map);
         if (Utils.isLight) {
-            image = BitmapFactory.decodeResource(getResources(), R.drawable.background_l);
             prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
             tempCanvas.drawBitmap(prom, 0, 0, null);
         } else {
-            image = BitmapFactory.decodeResource(getResources(), R.drawable.background_d);
             prom = Bitmap.createScaledBitmap(image, iv.getWidth(), iv.getHeight(), false);
             tempCanvas.drawBitmap(prom, 0, 0, null);
         }
