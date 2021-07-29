@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -127,6 +128,7 @@
                             android:cropToPadding="false"
                             android:onClick="onMapClick" />
 
+
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
@@ -240,6 +242,27 @@
         android:gravity="bottom"
         android:orientation="horizontal">
 
+
+        <ImageButton
+            android:id="@+id/comBarButton1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="25"
+            android:alpha="0.25"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:src="@drawable/e" />
+
+        <ImageButton
+            android:id="@+id/comBarButton2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="25"
+            android:alpha="0.25"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:src="@drawable/n" />
+
         <ImageButton
             android:id="@+id/comBarButton0"
             android:layout_width="40dp"
@@ -251,28 +274,11 @@
             android:src="@drawable/ref" />
 
         <ImageButton
-            android:id="@+id/comBarButton1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/e" />
-
-        <ImageButton
-            android:id="@+id/comBarButton2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="25"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/n" />
-
-        <ImageButton
             android:id="@+id/comBarButton3"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="25"
+            android:alpha="0.25"
             android:background="@android:color/transparent"
             android:clickable="true"
             android:src="@drawable/s" />
@@ -282,6 +288,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_weight="25"
+            android:alpha="0.25"
             android:background="@android:color/transparent"
             android:clickable="true"
             android:src="@drawable/w" />
@@ -308,5 +315,15 @@
         android:layout_height="457dip"
         android:layout_gravity="bottom|right"
         android:orientation="vertical" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="20sp"
+        android:layout_marginRight="-5sp"
+        android:adjustViewBounds="false"
+        android:src="@drawable/zoom" />
 
 </FrameLayout>

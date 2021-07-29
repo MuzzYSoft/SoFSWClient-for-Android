@@ -63,7 +63,7 @@ public class ChatFragment extends Fragment {
         someEventListener.SendCom("chatmess !chroom? descr");
         someEventListener.addLog("chatmess !chroom? descr");
         LinearLayout ll = (LinearLayout) v.findViewById(R.id.chatContent);
-        if (ll.getChildCount() == 0) someEventListener.SendCom("chatmess !history");
+        //if (ll.getChildCount() == 0) someEventListener.SendCom("chatmess !history");
         Button btn = (Button) v.findViewById(R.id.chatRoomSelButt);
         // создаем обработчик нажатия
         View.OnClickListener oclBtnCmd = new View.OnClickListener() {
@@ -113,7 +113,7 @@ public class ChatFragment extends Fragment {
     protected void AddChatRoomB(String chnum, String chname, String des, String incount,View v) {
             LinearLayout ll = (LinearLayout) v.findViewById(R.id.chatContent);
             Button btn = new Button(getActivity());
-            String prom="Комната: " + chname + "  {" + incount + "чел.}\n" + des;
+            String prom = "Комната: " + chname + "  {" + incount + getString(R.string.room_cnt_p) + "}\n" + des;
             btn.setText(prom);
             btn.setTag("chatmess !chroom! " + chnum);
             btn.setTransformationMethod(null);

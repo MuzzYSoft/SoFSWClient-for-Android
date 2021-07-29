@@ -55,7 +55,7 @@ public class CommsFragment extends Fragment {
     }
 
     protected void AddButC(String kay, String txt,View v) {
-        if(!Utils.flag) {
+        //if(!Utils.flag) {
             if (txt != "") {
                 LinearLayout ll = (LinearLayout) v.findViewById(R.id.ComButtLay);
                 Button btn = new Button(getActivity());
@@ -89,7 +89,7 @@ public class CommsFragment extends Fragment {
                 btn.setOnClickListener(oclBtnCmd);
                 ll.addView(btn);
             }
-        }
+        //}
     }
 
 

@@ -29,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +45,8 @@ public class GameFragment extends Fragment {
         public void setCurrentIt(int i);
         public void getAuth();
     }
+
+    public static boolean loaded = false;
 
     public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private int STextEditID;
@@ -208,12 +209,14 @@ public class GameFragment extends Fragment {
         gll.setVisibility(View.INVISIBLE);
         //scrollViewCons.setVisibility(View.INVISIBLE);
         inProgressLinearLayout.setVisibility(View.VISIBLE);
+        loaded = false;
     }
 
     protected static void ShowGameView(){
         gll.setVisibility(View.VISIBLE);
         //scrollViewCons.setVisibility(View.VISIBLE);
         inProgressLinearLayout.setVisibility(View.INVISIBLE);
+        loaded = true;
     }
 
     public void ChangeMapSize(View v) {
@@ -233,6 +236,21 @@ public class GameFragment extends Fragment {
 
         someEventListenerGm.SendCom("0");
         someEventListenerGm.addLog("0");
+    }
+
+    public void InactDirButts() {
+        btnGoNorth.setAlpha((float) 0.25);
+        btnGoEast.setAlpha((float) 0.25);
+        btnGoWest.setAlpha((float) 0.25);
+        btnGoSouth.setAlpha((float) 0.25);
+    }
+
+    protected void ShowToast(String text) {
+        Toast toastPriv = Toast.makeText(getActivity().getApplicationContext(),
+                text, Toast.LENGTH_SHORT);
+
+        toastPriv.setGravity(Gravity.BOTTOM, -30, 0);
+        toastPriv.show();
     }
 
     protected void AddGText(String txt,View v) {
@@ -270,7 +288,7 @@ public class GameFragment extends Fragment {
         }
     }
 
-    protected void AddButG(String kay, String txt, View v, PagerTabStrip titlestrip) {
+    protected void AddButG(String kay, String txt, String ctype, View v, PagerTabStrip titlestrip) {
         vc=v;
         if (txt != "") {
 
@@ -282,6 +300,21 @@ public class GameFragment extends Fragment {
                             .getDisplayMetrics());
             lp.setMargins(marginInDp, marginInDp, marginInDp, marginInDp);
             lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            switch (ctype)
+            {
+                case "dn":
+                    btnGoNorth.setAlpha((float)1);
+                    break;
+                case "de":
+                    btnGoEast.setAlpha((float)1);
+                    break;
+                case "dw":
+                    btnGoWest.setAlpha((float)1);
+                    break;
+                case "ds":
+                    btnGoSouth.setAlpha((float)1);
+                    break;
+            }
             switch (kay)
             {
                 case "name":
@@ -305,7 +338,7 @@ public class GameFragment extends Fragment {
                         public void onClick(View v) {
                             EditText mCmdText = (EditText) vc.findViewById(STextEditID);
                             String scom = mCmdText.getText().toString();
-                            if (scom == "") {
+                            if (scom.length() < 1) {
                                 scom = "0";
                             }
                             someEventListenerGm.SendCom(scom);
@@ -337,7 +370,7 @@ public class GameFragment extends Fragment {
                     btn.setText(txt);
                     btn.setTag(kay);
                     switch(kay){
-                        case "SETTINGS swtheme":
+                        /*case "SETTINGS swtheme":
                             if (txt.contains("Выбрана: Светлая тема")) {
                                 // создаем обработчик нажатия
                                 View.OnClickListener oclBtnCmdd = new View.OnClickListener() {
@@ -369,8 +402,9 @@ public class GameFragment extends Fragment {
                                 };
                                 btn.setOnClickListener(oclBtnCmdd);
                             }
-                            break;
+                            break;*/
                         case "SETTINGS swpush_rdy":
+                            //TODO: убрать костыли (с парсингом текста)
                             if(txt.contains("выключены"))
                             {
                                 // создаем обработчик нажатия
@@ -661,7 +695,7 @@ public class GameFragment extends Fragment {
         }
     }
     protected void AddButC(String kay, String txt,View v) {
-        if(!Utils.flag) {
+        //if(!Utils.flag) {
             if (txt != "") {
                 Button btn = new Button(getActivity());
                 int sizeInDp = (int) TypedValue.applyDimension(
@@ -696,6 +730,6 @@ public class GameFragment extends Fragment {
                 LinearLayout ll = (LinearLayout) v.findViewById(R.id.comsButtsLinearLayout);
                 ll.addView(btn);
             }
-        }
+        //}
     }
 }

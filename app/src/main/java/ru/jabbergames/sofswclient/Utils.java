@@ -2,6 +2,7 @@ package ru.jabbergames.sofswclient;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 
@@ -10,12 +11,12 @@ import java.util.ArrayList;
  */
 public class Utils
 {
-    private static int sTheme;
+    public static int sTheme;
     public static boolean seeHist=false;
     public static boolean inFight=false;
     public final static int THEME_LIGHT = 0;
     public final static int THEME_DARK = 1;
-    public static boolean flag=true;
+    //public static boolean flag=true; hoqu, для чего она? Пока уберу.
     public static boolean isLight=true;
     public static boolean toastHpIsAcc=true;
     public static boolean toastPrMesIsAcc=true;
@@ -30,15 +31,28 @@ public class Utils
     public static String curX;
     public static String curY;
     public static String curCode;
+    //public static boolean start = true; костыль?
+    public static String fmsToken = "";
+    public static boolean pause = false;
     /**
      * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
      */
     public static void changeToTheme(Activity activity, int theme)
     {
         sTheme = theme;
-        activity.finish();
 
-        activity.startActivity(new Intent(activity, activity.getClass()));
+        SharedPreferences settings = activity.getSharedPreferences("sofclient", activity.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putInt("sTheme", theme);
+        prefEditor.apply(); 
+        
+        //activity.finish();
+
+        //activity.startActivity(new Intent(activity, activity.getClass()));
+
+        Intent intent = new Intent(activity, activity.getClass());
+        activity.startActivity(intent);
+        activity.finish();
 
     }
 
