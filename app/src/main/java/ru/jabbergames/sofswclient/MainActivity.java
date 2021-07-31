@@ -752,7 +752,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
                                                 gmFr.SetPSP(gelement.getAttribute("spdes"), gelement.getAttribute("sp"), gelement.getAttribute("spmax"));
                                                 break;
                                             case "ppt":
-                                                gmFr.SetPPT(gelement.getAttribute("ptdes"), gelement.getAttribute("pt"), gelement.getAttribute("ptmax"));
+                                                gmFr.SetPPT(gelement.getAttribute("ptdes"), gelement.getAttribute("pt"), gelement.getAttribute("ptmax"), gelement.getAttribute("ptprc"));
                                                 break;
                                             case "atten":
                                                 gmFr.SetAtten(gelement.getAttribute("on"));
@@ -790,7 +790,7 @@ public class MainActivity extends FragmentActivity implements onSomeEventListene
     public void SendComN(String cstr) {
         if (!cstr.equals("")) {
             //addLog("<---");
-            Log.e("out", cstr);
+            //("out", cstr);
             new LongOperation() {
                 @Override
                 public void onPostExecute(String result) {

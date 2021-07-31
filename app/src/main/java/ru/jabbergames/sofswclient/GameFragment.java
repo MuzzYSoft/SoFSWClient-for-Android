@@ -1,5 +1,6 @@
 package ru.jabbergames.sofswclient;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -560,18 +561,29 @@ public class GameFragment extends Fragment {
         }
     }
 
-    protected void SetPPT(String ptdes, String pt, String ptmax) {
+    @SuppressLint("DefaultLocale")
+    protected void SetPPT(String ptdes, String pt, String ptmax, String ptprc) {
         if (getView() != null) {
             String shpt = pt;
             if (pt.length() > 5) {
                 shpt = pt.substring(0, pt.length() - 3) + "k";
             }
             TextView tv = (TextView) getView().findViewById(R.id.progress_pt_text);
-            int i = Integer.parseInt(ptmax) - Integer.parseInt(pt);
-            tv.setText(ptdes + shpt + "/" + Integer.toString(i));  // Convert.ToString(Convert.ToInt32(ptmax) - Convert.ToInt32(pt));
             ProgressBar pb = (ProgressBar) getView().findViewById(R.id.progressBarPT);
-            pb.setMax(Integer.parseInt(ptmax));
-            pb.setProgress(Integer.parseInt(pt));
+
+            if (ptprc.isEmpty()) {
+                int maxP = Integer.parseInt(ptmax);
+                int cpt = Integer.parseInt(pt);
+                int i = maxP - cpt;
+
+                tv.setText(ptdes + shpt + "/" + String.valueOf(i));
+                pb.setMax(maxP);
+                pb.setProgress(cpt);
+            }else{
+                tv.setText(ptdes + ptprc + '%');
+                pb.setMax(100);
+                pb.setProgress((int)Float.parseFloat(ptprc));
+            }
         }
     }
 
